@@ -4,6 +4,8 @@ bin = [
   { name = "zeros_sol", path = "solutions/01_creation/zeros.rs" },
   { name = "ones", path = "exercises/01_creation/ones.rs" },
   { name = "ones_sol", path = "solutions/01_creation/ones.rs" },
+  { name = "full", path = "exercises/01_creation/full.rs" },
+  { name = "full_sol", path = "solutions/01_creation/full.rs" },
 ]
 
 [package]

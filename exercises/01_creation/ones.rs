@@ -1,17 +1,6 @@
-// Exercise 002: numpy.ones, using your graduated zeros implementation.
-// Read lessons/002-ones.md. Edit only ones and keep the tests intact.
-// This function becomes rumpy::ones after verification and graduation.
-use rumpy::Array;
-
-/// Return an owned f64 array filled with 1.0, preserving the requested shape.
-/// Scope: the same small, valid shapes supported by rumpy::zeros.
-pub fn ones(shape: &[usize]) -> Array {
-    // TODO: Reuse rumpy::zeros, change each stored value to one, and return the array.
-    let _ = shape;
-    let mut a = rumpy::zeros(shape);
-    a.as_mut_slice().fill(1.0);
-    a
-}
+// Exercise 002 completed: the learner implementation lives in src/creation/ones.rs.
+// TODO (historical, completed): implement ones. This runner now checks the public API.
+pub use rumpy::ones;
 
 fn main() {}
 

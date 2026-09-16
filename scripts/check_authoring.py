@@ -1,7 +1,7 @@
 """Check a newly authored publication without editing the learner's files.
 
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
-currently describe unary shape -> Array creation operations. Extend oracle
+describe zeros/ones(shape) and full(shape, scalar fill_value). Extend oracle
 calls explicitly when the course introduces other signatures.
 """
 from pathlib import Path
@@ -97,14 +97,22 @@ def main():
                 callable_name = f"{module}::{name}"
             for case in fixture["cases"]:
                 shape = json.dumps(case["shape"])
-                data = json.dumps(case["data"])
+                if name == "full":
+                    arguments = f"expected_shape, f64::from_bits({case['fill_bits']}u64)"
+                    values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
+                    data = f"[{values}]"
+                elif name in {"zeros", "ones"}:
+                    arguments = "expected_shape"
+                    data = json.dumps(case["data"])
+                else:
+                    raise ValueError(f"Unsupported oracle signature: {name}")
                 checks.extend([
                     f"    let expected_shape: &[usize] = &{shape};",
                     f"    let expected_data: &[f64] = &{data};",
-                    f"    let a = {callable_name}(expected_shape);",
+                    f"    let a = {callable_name}({arguments});",
                     "    assert_eq!(a.shape(), expected_shape);",
                     f"    assert_eq!(a.size(), {case['size']});",
-                    "    assert_eq!(a.as_slice(), expected_data);",
+                    "    assert_eq!(a.as_slice().len(), expected_data.len());",
                     "    for (actual, expected) in a.as_slice().iter().zip(expected_data) {",
                     "        assert_eq!(actual.to_bits(), expected.to_bits());",
                     "    }",
