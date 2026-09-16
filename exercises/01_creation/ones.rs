@@ -8,7 +8,9 @@ use rumpy::Array;
 pub fn ones(shape: &[usize]) -> Array {
     // TODO: Reuse rumpy::zeros, change each stored value to one, and return the array.
     let _ = shape;
-    todo!("Implement ones using your zeros library function")
+    let mut a = rumpy::zeros(shape);
+    a.as_mut_slice().fill(1.0);
+    a
 }
 
 fn main() {}
