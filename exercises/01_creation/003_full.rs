@@ -1,24 +1,12 @@
 // Exercise 003: numpy.full with a scalar f64 fill value.
 // Read lessons/003-full.md. Edit full and keep the tests intact.
 // The starting code copies your ones implementation. The library ones stays usable.
-use rumpy::Array;
-
-/// Return an owned array with the exact shape and copies of fill_value.
-/// Scope: small valid shapes, scalar f64 fill, contiguous row-major storage.
-pub fn full(shape: &[usize], fill_value: f64) -> Array {
-    // TODO: Adapt your ones code to the fill parameter, then return the array.
-    let _ = shape;
-    let mut a = rumpy::zeros(shape);
-    a.as_mut_slice().fill(1.0);
-    let _ = fill_value;
-    todo!("Adapt the copied ones implementation to full")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::full;
+    use rumpy::full;
 
     fn assert_array(shape: &[usize], fill_value: f64, expected_size: usize) {
         let a = full(shape, fill_value);

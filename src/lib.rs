@@ -3,4 +3,4 @@
 mod array;
 pub use array::{Array, ShapeError};
 pub mod creation;
-pub use creation::{ones, zeros};
+pub use creation::{full, ones, zeros};
