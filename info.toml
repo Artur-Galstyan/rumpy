@@ -2,7 +2,7 @@ format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
 zeros and ones now live in src/creation/. Your next exercise is full.
-Read lessons/003-full.md, then edit exercises/01_creation/full.rs. Press h for hints.
+Read lessons/003-full.md, then edit exercises/01_creation/003_full.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -12,7 +12,7 @@ No new learner commit means no new exercise. Run git pull --ff-only for updates.
 """
 
 [[exercises]]
-name = "zeros"
+name = "001_zeros"
 dir = "01_creation"
 skip_check_unsolved = true
 test = true
@@ -39,11 +39,11 @@ valid shapes. Shape validation is scaffold code, not today's task.
 
 Completed: your implementation now lives in src/creation/zeros.rs.
 The old exercise tests the public API. A separate reference is in
-solutions/01_creation/zeros.rs. The original hints remain above for review.
+solutions/01_creation/001_zeros.rs. The original hints remain above for review.
 """
 
 [[exercises]]
-name = "ones"
+name = "002_ones"
 dir = "01_creation"
 skip_check_unsolved = true
 test = true
@@ -65,14 +65,14 @@ without changing its shape. A loop or a mutable-slice method can update values.
 
 Hint 4 - Rust tools:
 Slices have a fill method. Return the Array, not its borrowed slice.
-The reference solution is solutions/01_creation/ones.rs; compare after an attempt.
+The reference solution is solutions/01_creation/002_ones.rs; compare after an attempt.
 
 Completed: your implementation now lives in src/creation/ones.rs.
 The old exercise tests rumpy::ones. The original hints remain above for review.
 """
 
 [[exercises]]
-name = "full"
+name = "003_full"
 dir = "01_creation"
 test = true
 strict_clippy = false
@@ -94,5 +94,5 @@ Arithmetic that appears equivalent for ordinary numbers can change those values.
 Hint 4 - Return value:
 Use mutable-slice access to change the stored values. Return the owned Array.
 Remove the temporary todo! only when the function satisfies its contract.
-The reference is solutions/01_creation/full.rs; compare after your attempt.
+The reference is solutions/01_creation/003_full.rs; compare after your attempt.
 """

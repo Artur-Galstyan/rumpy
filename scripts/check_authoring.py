@@ -40,7 +40,8 @@ def main():
     exercises = {item["name"]: item for item in metadata["exercises"]}
     current = progress["current_exercise"]
     graduated = progress.get("graduated", {})
-    if current in graduated:
+    graduated_exercises = {item["exercise"] for item in graduated.values()}
+    if current in graduated_exercises:
         raise ValueError("The current publication needs an unfinished task")
 
     with tempfile.TemporaryDirectory(prefix="rumpy-author-check-") as temp:
@@ -53,7 +54,7 @@ def main():
         run(["cargo", "check", "--all-targets"], work)
         run(["cargo", "clippy", "--all-targets", "--", "-D", "warnings"], work)
         run(["cargo", "test", "--lib", "--test", "scaffold"], work)
-        for name in graduated:
+        for name in sorted(graduated_exercises):
             run(["cargo", "test", "--bin", name], work)
         run(["cargo", "test", "--bin", current], work, unfinished=True)
 
@@ -71,7 +72,7 @@ def main():
 
         # Install references only in this disposable copy, never into src/.
         for name, item in exercises.items():
-            if name not in graduated:
+            if name not in graduated_exercises:
                 relative = Path(item.get("dir") or "") / f"{name}.rs"
                 shutil.copyfile(work / "solutions" / relative, work / "exercises" / relative)
         run(["cargo", "test", "--all-targets"], work)
@@ -86,8 +87,9 @@ def main():
             if name in graduated:
                 callable_name = graduated[name]["public_api"]
             else:
-                item = exercises[name]
-                relative = Path(item.get("dir") or "") / f"{name}.rs"
+                exercise_id = progress["active"][name]["exercise"]
+                item = exercises[exercise_id]
+                relative = Path(item.get("dir") or "") / f"{exercise_id}.rs"
                 module = f"oracle_{name}"
                 declarations.extend([
                     "#[allow(dead_code)]",

@@ -1,5 +1,5 @@
 {
-  "current_exercise": "full",
+  "current_exercise": "003_full",
   "sequence": 3,
   "last_handled_learner_commit": "ca1d4b1f29d700a77f34c8bad8f5363bdddd3675",
   "next_candidate": "arange: a one-dimensional range with an explicit positive step",
@@ -11,22 +11,25 @@
       "implementation": "src/creation/zeros.rs",
       "public_api": "rumpy::zeros",
       "learner_commit": "f81bf89c10b258d1cbaadab5274306caaa59def5",
-      "regression_runner": "exercises/01_creation/zeros.rs"
+      "regression_runner": "exercises/01_creation/001_zeros.rs",
+      "exercise": "001_zeros"
     },
     "ones": {
       "implementation": "src/creation/ones.rs",
       "public_api": "rumpy::ones",
       "learner_commit": "ca1d4b1f29d700a77f34c8bad8f5363bdddd3675",
-      "regression_runner": "exercises/01_creation/ones.rs"
+      "regression_runner": "exercises/01_creation/002_ones.rs",
+      "exercise": "002_ones"
     }
   },
   "active": {
     "full": {
-      "implementation": "exercises/01_creation/full.rs",
+      "implementation": "exercises/01_creation/003_full.rs",
       "library_target": "src/creation/full.rs",
       "extends": null,
       "copied_from": "src/creation/ones.rs",
-      "source_learner_commit": "ca1d4b1f29d700a77f34c8bad8f5363bdddd3675"
+      "source_learner_commit": "ca1d4b1f29d700a77f34c8bad8f5363bdddd3675",
+      "exercise": "003_full"
     }
   }
 }

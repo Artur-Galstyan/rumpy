@@ -1,7 +1,7 @@
 # 002 — `ones`: reuse an operation without changing the shape
 
 **Your task:** implement `ones(shape: &[usize]) -> Array` in
-`exercises/01_creation/ones.rs`. Reuse your completed `rumpy::zeros` operation.
+`exercises/01_creation/002_ones.rs`. Reuse your completed `rumpy::zeros` operation.
 
 Your `zeros` implementation now lives in `src/creation/zeros.rs`. Do not edit it
 for this exercise. The old exercise runs its original tests against the library.
@@ -56,18 +56,18 @@ implementation. NumPy is an independent test oracle, not the implementation.
 ## Checks and comparison
 
 ```sh
-rustlings hint ones
-rustlings run ones
+rustlings hint 002_ones
+rustlings run 002_ones
 # Headless alternative:
-cargo test --bin ones
+cargo test --bin 002_ones
 # Check the completed dependency:
-cargo test --bin zeros
+cargo test --bin 001_zeros
 ```
 
 The tests cover vectors, rectangular matrices, higher-rank arrays, zero-length
 axes, scalars, size-one axes, and ownership. The stub intentionally fails them.
 
-After your attempt, compare with `solutions/01_creation/ones.rs`. That file does
+After your attempt, compare with `solutions/01_creation/002_ones.rs`. That file does
 not replace your exercise or library code. Commit and push your attempt to `main`.
 A new pushed commit triggers the next exercise, even if this one is unfinished.
 A passing implementation can graduate to `src/creation/ones.rs` and `rumpy::ones`.

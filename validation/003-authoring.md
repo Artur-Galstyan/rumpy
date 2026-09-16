@@ -1,5 +1,8 @@
 # Exercise 003 verification
 
+> Historical report: this verification predates the filename migration.
+> The exercise IDs are now `001_zeros`, `002_ones`, and `003_full`.
+
 ## Learner baseline
 
 Source learner commit: `ca1d4b1f29d700a77f34c8bad8f5363bdddd3675`.

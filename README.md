@@ -17,18 +17,22 @@ rustlings
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
 **Current task:** read [003 — full](lessons/003-full.md) and edit
-`exercises/01_creation/full.rs`. Your `zeros` and `ones` now live in `src/creation/`.
+`exercises/01_creation/003_full.rs`. Your `zeros` and `ones` now live in `src/creation/`.
 The new task copies your `ones` code and adds a scalar fill parameter.
 The public `ones` signature stays unchanged. `full` is a separate operation.
-If a fresh Rustlings state starts at `zeros`, check it and press `n`, then repeat for `ones`.
+If Rustlings starts at `001_zeros`, check it and press `n`, then repeat for `002_ones`.
+The filename prefix is the global exercise order. Matching solutions use the same prefix.
+Public function names stay unchanged: `rumpy::zeros`, `rumpy::ones`, and later `rumpy::full`.
+After this filename migration, Rustlings may need to check completed exercises again.
+Your code and tests remain intact. There is no need to solve those exercises again.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
 ```sh
-rustlings hint full
-rustlings run full
+rustlings hint 003_full
+rustlings run 003_full
 # Headless checks:
-cargo test --bin full
-cargo test --bin zeros --bin ones
+cargo test --bin 003_full
+cargo test --bin 001_zeros --bin 002_ones
 ```
 
 Rustlings success output needs a real terminal. Use Cargo for headless checks.
@@ -38,12 +42,12 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/01_creation/full.rs   active task: edit this
-solutions/01_creation/full.rs   reference: compare after your attempt
+exercises/01_creation/003_full.rs   active task: edit this
+solutions/01_creation/003_full.rs   reference: compare after your attempt
 src/creation/ones.rs            your completed implementation
-exercises/01_creation/ones.rs   original tests against rumpy::ones
+exercises/01_creation/002_ones.rs   original tests against rumpy::ones
 src/creation/zeros.rs           your completed implementation
-exercises/01_creation/zeros.rs  original tests against rumpy::zeros
+exercises/01_creation/001_zeros.rs  original tests against rumpy::zeros
 src/lib.rs                     public library exports
 ```
 
@@ -74,8 +78,8 @@ You can also open it directly. These files are spoilers for comparison, not libr
 
 ```sh
 git pull --ff-only
-# Edit exercises/01_creation/full.rs and use Rustlings.
-git add exercises/01_creation/full.rs
+# Edit exercises/01_creation/003_full.rs and use Rustlings.
+git add exercises/01_creation/003_full.rs
 git commit -m "Implement full"
 git push origin main
 ```
@@ -95,7 +99,7 @@ discard your work. This job remains separate from paper spaced repetition.
 
 - [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
 - `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
-- `cargo test --lib --test scaffold --bin zeros --bin ones` checks the completed library and scaffold.
+- `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones` checks the completed library and scaffold.
 - `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
 - `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 

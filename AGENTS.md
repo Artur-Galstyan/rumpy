@@ -40,6 +40,13 @@ row-major f64 arrays until a later lesson explicitly extends that scope.
 
 ## Exercise and solution files
 
+- Prefix every exercise ID and filename with its global three-digit sequence:
+  001_zeros, 002_ones, 003_full. Continue across topic folders, not from one per folder.
+  Use the same basename in solutions/. Keep info.toml names, Cargo bins, documented
+  commands, and progress paths aligned. Run rustlings dev update after a rename.
+  Public function names and src module filenames stay unnumbered. The active/graduated
+  maps stay keyed by function, with an explicit exercise field for the numbered ID.
+  current_exercise stores the numbered ID. A later extension gets a fresh sequence ID.
 - Add one small operation, a lesson, exact contract, meaningful tests, and progressive hints
   in info.toml. Include // TODO and fn main(). Leave new learner code unfinished and compilable.
 - Publish a tested, commented solution at solutions/<same-topic>/<same-name>.rs. Include the

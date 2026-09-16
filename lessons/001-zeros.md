@@ -2,9 +2,9 @@
 
 **Status:** completed. Your implementation moved to `src/creation/zeros.rs`.
 The original exercise now tests `rumpy::zeros`. Its tests remain unchanged.
-Compare with `solutions/01_creation/zeros.rs` if useful. The original lesson follows.
+Compare with `solutions/01_creation/001_zeros.rs` if useful. The original lesson follows.
 
-**Original task:** implement `zeros(shape: &[usize]) -> Array` in `exercises/01_creation/zeros.rs`.
+**Original task:** implement `zeros(shape: &[usize]) -> Array` in `exercises/01_creation/001_zeros.rs`.
 This is the first building block of your numerical library.
 
 ## The idea
@@ -80,8 +80,8 @@ or an external process from your implementation. No special solution style is re
 ## Hints and verification
 
 ```sh
-rustlings hint zeros
-rustlings run zeros
+rustlings hint 001_zeros
+rustlings run 001_zeros
 ```
 
 Hints progress from the shape concept to useful Rust tools. Stop reading when you have enough.

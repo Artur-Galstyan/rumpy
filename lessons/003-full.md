@@ -1,7 +1,7 @@
 # 003 — `full`
 
 Adapt your `ones` code into `full(shape: &[usize], fill_value: f64) -> Array`.
-Edit `exercises/01_creation/full.rs`. Keep the tests intact.
+Edit `exercises/01_creation/003_full.rs`. Keep the tests intact.
 
 ## Purpose
 
@@ -77,15 +77,15 @@ NumPy supplies independent oracle data, not your function body.
 ## Checks and comparison
 
 ```sh
-rustlings hint full
-rustlings run full
+rustlings hint 003_full
+rustlings run 003_full
 # Headless checks:
-cargo test --bin full
-cargo test --lib --test scaffold --bin zeros --bin ones
+cargo test --bin 003_full
+cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones
 ```
 
 The copied code remains incomplete. The stub deliberately fails at `todo!`.
-After your attempt, compare with `solutions/01_creation/full.rs`.
+After your attempt, compare with `solutions/01_creation/003_full.rs`.
 The reference contains the same contract tests and stays separate from your library.
 
 Rustlings watches the current exercise only. After a dependency change, press `c` for a full check.
