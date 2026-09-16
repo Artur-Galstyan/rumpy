@@ -1,0 +1,41 @@
+format_version = 1
+welcome_message = """
+Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
+Start with lessons/001-zeros.md, then edit exercises/01_creation/zeros.rs.
+Your implementation becomes rumpy::zeros. Press h for a progressive hint.
+"""
+final_message = """
+You reached the end of the currently published exercises.
+Commit and push your attempt to main. The separate daily check publishes the next
+exercise after a new learner commit, even if your current tests are not all green.
+No new learner commit means no new exercise. Run git pull --ff-only for updates.
+"""
+
+[[exercises]]
+name = "zeros"
+dir = "01_creation"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Shape:
+Count the coordinate combinations, not the axes. A rectangular array needs one
+stored value for each position. Preserve every axis, including axes of length one.
+
+Hint 2 - Scalar versus empty:
+An empty shape denotes one scalar. A shape containing a zero-length axis has no
+positions. Your count must distinguish these two cases.
+
+Hint 3 - Rust tools:
+Iterator::product can combine axis lengths. Vec supports repetition of a value.
+shape.to_vec() copies the shape so the result does not borrow the caller's input.
+
+Hint 4 - Container:
+Array::from_vec(flat_data, owned_shape) returns Result<Array, ShapeError>.
+You may use expect with a useful message: this exercise restricts inputs to small,
+valid shapes. Shape validation is scaffold code, not today's task.
+
+No complete implementation is included. The lesson explains the conventions;
+the tests describe the observable contract.
+"""

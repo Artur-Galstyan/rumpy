@@ -1,0 +1,9 @@
+{
+  "current_exercise": "zeros",
+  "sequence": 1,
+  "last_handled_learner_commit": null,
+  "next_candidate": "ones or full, reusing the array conventions",
+  "trigger": "new learner commits on origin/main, not passing tests",
+  "agent_name": "Rumpy Exercise Bot",
+  "agent_email": "rumpy-exercises@users.noreply.github.com"
+}

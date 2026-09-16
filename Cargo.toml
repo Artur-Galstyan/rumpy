@@ -1,0 +1,12 @@
+# Rustlings maintains this bin list through `rustlings dev update`.
+bin = [
+  { name = "zeros", path = "exercises/01_creation/zeros.rs" },
+]
+
+[package]
+name = "rumpy"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
