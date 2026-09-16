@@ -10,8 +10,9 @@ use rumpy::Array;
 /// No dtype/order/like/device parameters yet. See the lesson for scalar/empty cases.
 pub fn zeros(shape: &[usize]) -> Array {
     // TODO: Compute the element count, create the zero-filled data, and preserve the shape.
-    let _ = shape;
-    todo!("Implement zeros: preserve the shape and create the right number of zeros")
+    let count: usize = shape.iter().product();
+    let data = vec![0.0; count];
+    Array::from_vec(data, shape.to_vec()).expect("Invalid shape")
 }
 
 #[allow(dead_code)]
