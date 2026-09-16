@@ -1,5 +1,11 @@
-# Solutions
+# Reference solutions
 
-This directory is required by Rustlings author checks and intentionally contains no answer files.
-The author verifies reference implementations in a disposable private workspace, not in your Git history.
-Use `rustlings hint zeros` for progressive hints.
+Each exercise has a matching, tested solution at the same relative path here.
+For example, `exercises/01_creation/ones.rs` corresponds to `solutions/01_creation/ones.rs`.
+Rustlings can show the solution path after a successful run. You can also open it directly.
+
+These are explicit spoilers for comparison, not replacements for your work.
+The library uses only your verified, graduated implementations under `src/`.
+Solution files never become library modules. Each solution includes the exercise's tests.
+
+Run `rustlings dev check --require-solutions` for the author checks.

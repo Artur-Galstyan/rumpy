@@ -1,8 +1,8 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Start with lessons/001-zeros.md, then edit exercises/01_creation/zeros.rs.
-Your implementation becomes rumpy::zeros. Press h for a progressive hint.
+zeros now lives in src/creation/zeros.rs. Your next exercise is ones.
+Read lessons/002-ones.md, then edit exercises/01_creation/ones.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -14,6 +14,7 @@ No new learner commit means no new exercise. Run git pull --ff-only for updates.
 [[exercises]]
 name = "zeros"
 dir = "01_creation"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -36,6 +37,32 @@ Array::from_vec(flat_data, owned_shape) returns Result<Array, ShapeError>.
 You may use expect with a useful message: this exercise restricts inputs to small,
 valid shapes. Shape validation is scaffold code, not today's task.
 
-No complete implementation is included. The lesson explains the conventions;
-the tests describe the observable contract.
+Completed: your implementation now lives in src/creation/zeros.rs.
+The old exercise tests the public API. A separate reference is in
+solutions/01_creation/zeros.rs. The original hints remain above for review.
+"""
+
+[[exercises]]
+name = "ones"
+dir = "01_creation"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Reuse:
+Your completed rumpy::zeros already preserves the shape, allocates independent
+storage, and distinguishes scalars from zero-length axes. Reuse that work.
+
+Hint 2 - What changes:
+The number and arrangement of positions stay the same. Only the stored values
+change. Do not add values to an array that has a zero-length axis.
+
+Hint 3 - Mutable access:
+Bind the returned Array as mutable. Array::as_mut_slice gives access to its data
+without changing its shape. A loop or a mutable-slice method can update values.
+
+Hint 4 - Rust tools:
+Slices have a fill method. Return the Array, not its borrowed slice.
+The reference solution is solutions/01_creation/ones.rs; compare after an attempt.
 """

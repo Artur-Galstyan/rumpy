@@ -1,6 +1,9 @@
 # Rustlings maintains this bin list through `rustlings dev update`.
 bin = [
   { name = "zeros", path = "exercises/01_creation/zeros.rs" },
+  { name = "zeros_sol", path = "solutions/01_creation/zeros.rs" },
+  { name = "ones", path = "exercises/01_creation/ones.rs" },
+  { name = "ones_sol", path = "solutions/01_creation/ones.rs" },
 ]
 
 [package]

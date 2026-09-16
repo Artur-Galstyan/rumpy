@@ -1,6 +1,10 @@
 # 001 — `zeros`: shape is not storage
 
-**Your task:** implement `zeros(shape: &[usize]) -> Array` in `exercises/01_creation/zeros.rs`.
+**Status:** completed. Your implementation moved to `src/creation/zeros.rs`.
+The original exercise now tests `rumpy::zeros`. Its tests remain unchanged.
+Compare with `solutions/01_creation/zeros.rs` if useful. The original lesson follows.
+
+**Original task:** implement `zeros(shape: &[usize]) -> Array` in `exercises/01_creation/zeros.rs`.
 This is the first building block of your numerical library.
 
 ## The idea

@@ -1,9 +1,24 @@
 {
-  "current_exercise": "zeros",
-  "sequence": 1,
-  "last_handled_learner_commit": null,
-  "next_candidate": "ones or full, reusing the array conventions",
+  "current_exercise": "ones",
+  "sequence": 2,
+  "last_handled_learner_commit": "f81bf89c10b258d1cbaadab5274306caaa59def5",
+  "next_candidate": "full: parameterise the fill value",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
-  "agent_email": "rumpy-exercises@users.noreply.github.com"
+  "agent_email": "rumpy-exercises@users.noreply.github.com",
+  "graduated": {
+    "zeros": {
+      "implementation": "src/creation/zeros.rs",
+      "public_api": "rumpy::zeros",
+      "learner_commit": "f81bf89c10b258d1cbaadab5274306caaa59def5",
+      "regression_runner": "exercises/01_creation/zeros.rs"
+    }
+  },
+  "active": {
+    "ones": {
+      "implementation": "exercises/01_creation/ones.rs",
+      "library_target": "src/creation/ones.rs",
+      "extends": null
+    }
+  }
 }

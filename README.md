@@ -1,83 +1,105 @@
 # rumpy
 
-Build a small NumPy/SciPy-style numerical library in Rust, through custom Rustlings exercises.
-Start at the array foundations, preserve familiar API names, and reuse your own implementations as the library grows.
+Build a small NumPy/SciPy-style numerical library in Rust through custom Rustlings exercises.
+Your verified implementations become the library used by later exercises.
 
 ## Start
 
-Rust and Cargo are required. The repository pins Rust 1.97.1; rustup installs it if needed.
-Install the exercise runner if it is absent:
+Rust and Cargo are required. `rust-toolchain.toml` pins Rust 1.97.1.
 
 ```sh
 cargo install rustlings --version 6.5.0 --locked
-```
-
-```sh
 git clone git@github.com:Artur-Galstyan/rumpy.git
 cd rumpy
 rustlings
 ```
 
-Do **not** run `rustlings init` here: that creates the official Rust-language course, not this custom course.
-Read [the first lesson](lessons/001-zeros.md), then edit `exercises/01_creation/zeros.rs`.
-Press **h** in Rustlings for hints. Save the file to rerun its tests.
+Do **not** run `rustlings init` here. That creates the official Rust course.
 
-Commands from a terminal:
+**Current task:** read [002 — ones](lessons/002-ones.md) and edit
+`exercises/01_creation/ones.rs`. `zeros` is complete and lives in `src/creation/zeros.rs`.
+If a fresh Rustlings state starts at `zeros`, run its checks and press `n` to continue.
+Press `h` for hints. Save the current exercise to rerun its tests.
 
 ```sh
-rustlings hint zeros
-rustlings run zeros
+rustlings hint ones
+rustlings run ones
+# Headless checks:
+cargo test --bin ones
 cargo test --bin zeros
 ```
 
-Rustlings needs a real terminal, including for its success screen. For headless checks,
-use `cargo test --bin zeros`. Rustlings watches the current file under `exercises/`.
-If you edit an earlier dependency or scaffold code, press `c` for a full check, or restart
-with `rustlings --manual-run` and use `r`.
+Rustlings success output needs a real terminal. Use Cargo for headless checks.
+The watcher tracks the current exercise, not `src/` or other exercises.
+After dependency changes, press `c` for a full check, or use `--manual-run` with `r`.
 
-The first exercise is intentionally unfinished. Its tests should fail until you implement `zeros`.
-The tests are part of the task, not code to remove or weaken.
+## Exercise to library
 
-## One implementation, two uses
+```text
+exercises/01_creation/ones.rs   active task: edit this
+solutions/01_creation/ones.rs   reference: compare after your attempt
+src/creation/zeros.rs           your completed implementation
+exercises/01_creation/zeros.rs  original tests against rumpy::zeros
+src/lib.rs                     public library exports
+```
 
-`src/array.rs` supplies the small owned `f64` array container and shape checks.
-Your operation lives under `exercises/`, where Rustlings watches edits.
-`src/lib.rs` re-exports that exact implementation as `rumpy::zeros`.
-Later exercises call this library; nothing needs to be copied or promoted manually.
-Exercise test modules can also run through `cargo test --lib`, so a whole-suite run includes unfinished exercises and may be red by design.
+The library contains only verified learner implementations, never reference solutions.
+`src/array.rs` supplies the owned contiguous row-major `f64` array container.
+Active exercise implementations are not library modules. An unfinished exercise can
+fail without breaking the completed library. `cargo test` still includes unfinished
+exercise binaries and can therefore fail intentionally.
 
-We start with owned contiguous row-major storage and `f64`. Generic dtypes, views,
-parallel kernels, GPUs, and complete NumPy compatibility are explicitly out of scope for now.
-Every lesson documents its supported subset rather than silently changing the source API.
+After a pushed implementation meets its contract, the author moves **your code**
+into a topic module under `src/` and exposes it through `lib.rs`. The old exercise
+becomes a test runner against that public API. Its tests stay as regression checks.
+A passing test result permits graduation, not automatic replacement with an answer.
+
+If a later exercise extends an operation, the existing library implementation stays
+in place. The new exercise starts from a copy of your implementation and adds the
+new task. After verification, your extended version replaces the library version.
+Temporary duplication keeps the library usable while you work. A signature change
+must include an explicit migration and updated callers without weakening their tests.
+
+## Reference solutions
+
+Every exercise has a matching file under `solutions/`, including explanatory comments
+and the same contract tests. Rustlings can report its path after a successful run.
+You can also open it directly. These files are spoilers for comparison, not library code.
 
 ## Pull, solve, push
 
 ```sh
 git pull --ff-only
-# Edit the exercise and use Rustlings.
-git add exercises/01_creation/zeros.rs
-git commit -m "Implement zeros"
+# Edit exercises/01_creation/ones.rs and use Rustlings.
+git add exercises/01_creation/ones.rs
+git commit -m "Implement ones"
 git push origin main
 ```
 
-A separate Hermes job checks `main` daily at 07:30 Europe/Berlin. **Any new learner
-commit triggers one next exercise per check**, even if the attempt is unfinished or tests fail.
-No review-approval gate. Several new commits count as one batch. Bot commits never trigger
-more exercises. Unpushed edits and commits on other branches are not visible to the job.
+A separate Hermes job checks `main` daily at **07:30 Europe/Berlin**.
+Any new learner commit triggers one next exercise per check, even if tests fail.
+Several commits form one batch. Bot commits never trigger another exercise.
+No new learner commit means no new exercise or routine notification.
 
-The job preserves your code, adds the next exercise with tests and hints, and sends a Discord notification.
-Keep local work committed before you pull. If Git reports a conflict, stop and inspect it; never discard your work to get an update.
-This is separate from the paper spaced-repetition system.
+The job also checks pending implementations for graduation. Failed attempts remain
+untouched. The next exercise avoids broken dependencies where possible.
+Unpushed work and other branches are not visible to the job.
+Commit local work before a pull. If Git reports a conflict, inspect it rather than
+discard your work. This job remains separate from paper spaced repetition.
 
-## Curriculum and checks
+## Author checks
 
-- [Roadmap](ROADMAP.md)
-- [Exercise-author rules](AGENTS.md)
-- `.rumpy/progress.json`: current position and the last handled learner commit.
-- `cargo test --test scaffold`: checks the supplied container, independent of the unfinished exercise.
-- `cargo check --all-targets` and `cargo fmt --check`: scaffold/build checks.
-- `rustlings dev check`: validates a freshly authored unsolved exercise set. It is an authoring check, **not** your completion command; solved exercises intentionally cause its unsolved check to fail.
+- [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
+- `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
+- `cargo test --lib --test scaffold --bin zeros` checks the completed library and scaffold.
+- `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
+- `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 
-The author tests solutions in a disposable private workspace. Reference implementations
-are not included in your exercise files or committed to Git history. NumPy oracle checks
-for the first exercise are recorded in `validation/zeros-numpy.json`.
+Graduated runners use `skip_check_unsolved = true` in `info.toml`. Rustlings 6.5.0 still
+requires a literal `// TODO` comment in each runner, so completed runners label it historical.
+Do not remove their regression tests. The author checks are not a learner completion gate.
+
+`python3 scripts/check_authoring.py` verifies the current publication in disposable copies
+(Python 3.11+, Rustlings, and Cargo required). It checks the intentionally failing new stub,
+the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
+exercise files. After you solve the current task, its expected-red check will fail by design.

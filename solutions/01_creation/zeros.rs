@@ -1,8 +1,12 @@
-// Exercise 001: graduated. Your implementation lives in src/creation/zeros.rs.
-// This file keeps the original tests against the public library API.
-// TODO (historical, complete): implement zeros. No implementation work remains here.
-// Rustlings 6.5.0 requires a TODO comment even in completed regression runners.
-pub use rumpy::zeros;
+// Reference solution for exercise 001. This is not the library implementation.
+use rumpy::Array;
+
+pub fn zeros(shape: &[usize]) -> Array {
+    // The empty product is one: [] is a scalar, while a zero axis makes an empty array.
+    let count: usize = shape.iter().product();
+    // Copy both storage and shape. The result owns them independently of the caller.
+    Array::from_vec(vec![0.0; count], shape.to_vec()).expect("consistent shape and data")
+}
 
 fn main() {}
 

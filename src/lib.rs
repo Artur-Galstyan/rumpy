@@ -1,9 +1,6 @@
-//! A numerical library built one exercise at a time.
-//! Exercise implementations are re-exported here, not copied into a second library.
-extern crate self as rumpy;
+//! A numerical library built from verified learner implementations.
+//! Active exercises remain separate until they graduate into src/.
 mod array;
 pub use array::{Array, ShapeError};
-
-#[path = "../exercises/01_creation/zeros.rs"]
-mod zeros_exercise;
-pub use zeros_exercise::zeros;
+pub mod creation;
+pub use creation::zeros;
