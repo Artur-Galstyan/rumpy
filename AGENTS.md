@@ -14,29 +14,37 @@ row-major f64 arrays until a later lesson explicitly extends that scope.
 - Inspect baseline commits and test results before edits. If origin advances, preserve all
   commits, reapply only safe author changes, retest, and use a normal push.
 
-## Graduation and extensions
+## Learner-owned graduation and refactoring
 
-- Active tasks live under exercises/ so Rustlings watches edits. Do not import active tasks
-  into src/lib.rs. Only verified, graduated learner implementations belong under src/.
-- Inspect all pending attempts on each triggered check, not only the latest task. Graduate
-  only code that meets its documented contract and passes original tests plus independent
-  oracle/edge checks. Passing tests alone do not excuse removed assertions or a known bug.
-- Move the learner's actual implementation into a topic module, for example src/creation/zeros.rs.
-  Keep the function body unchanged apart from necessary import/path changes and formatting.
-  Export it through src/lib.rs. Record its source learner commit in .rumpy/progress.json.
-- Replace the old exercise implementation with a public-API import or thin adapter. Retain
-  its tests as regression checks. Set skip_check_unsolved = true in info.toml for graduated
-  runners. Keep a labelled historical // TODO: Rustlings 6.5.0 requires that marker even here.
-- Failed/incomplete attempts stay in exercises/ without fixes. They still trigger the next
-  exercise. Avoid unavailable/broken library dependencies or clearly report a blocker.
-- For a later extension, leave the old src implementation usable. Copy that implementation
-  into a new exercise with an explicit parameter/behaviour task. Do not start over or move
-  the library code back. Temporary duplication is deliberate until the extension graduates.
-- Before replacement, verify the extension and old behaviours. Explain signature changes,
-  update callers/regression adapters, and retain assertions. Preserve prior solutions for
-  their original contracts where possible, using documented adapters for changed dependencies.
-- Update the active/graduated maps, source commit provenance, current task, and next candidate.
-  Never mark an unfinished function as graduated or publish a reference as learner code.
+- The learner owns all moves into src/, module layout, exports, function refactors,
+  dependency changes, caller migrations, and conversion of exercise files into regression
+  runners. Do NOT perform these edits automatically, even when an exercise passes.
+  Only a separate explicit request to edit that code permits an exception.
+- Review pushed attempts and library changes against the original contract, assertions,
+  oracle data, and edge cases. Give feedback rather than silently fixing code or layout.
+- A passing exercise that still lives only under exercises/ is solved but not graduated.
+  Leave its source untouched. Record graduation only after the learner actually adds the
+  public library implementation and connects the old exercise tests to that public API,
+  and those checks pass. Inspect actual paths; suggested library_target paths are advisory.
+- The learner may consolidate functions into shared modules. Do not enforce one file per
+  function or restore the previous layout. Keep public API names unnumbered.
+- The author may maintain info.toml, generated Cargo bins, progress records, documentation,
+  and reference solutions. These bookkeeping changes must reflect the learner's actual
+  state and must not edit their implementations, imports/exports, callers, or old test runners.
+- Mark passing older exercises skip_check_unsolved = true when needed for author checks,
+  including solved-but-not-yet-integrated attempts. This is not proof of graduation.
+  Preserve all regression tests. If a runner lacks Rustlings' required historical // TODO
+  marker, explain the needed learner edit rather than silently changing its source.
+- Each new lesson includes a short post-exercise checklist: choose module layout, move
+  the implementation, expose its API, connect preserved tests, refactor dependencies,
+  and run regression tests. The learner does this work, not the author.
+- For extensions, the author may start a NEW exercise from a copy of the current learner
+  implementation while leaving src/ untouched. The learner decides how and when to merge
+  the extension, migrate callers, and refactor earlier operations. Explain compatibility
+  requirements and dependency cycles without doing the refactor for them.
+- Solving, graduation, and next-exercise publication are separate. An incomplete or
+  unintegrated attempt still triggers one next exercise for a new learner commit batch.
+  Avoid unavailable/broken dependencies where possible. Report problems without an approval gate.
 
 ## Exercise and solution files
 

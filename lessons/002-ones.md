@@ -1,6 +1,9 @@
 # 002 — `ones`: reuse an operation without changing the shape
 
-**Your task:** implement `ones(shape: &[usize]) -> Array` in
+**Status:** completed and already in the library. The original exercise instructions
+follow. For future tasks, you own graduation and refactoring as described in the README.
+
+**Original task:** implement `ones(shape: &[usize]) -> Array` in
 `exercises/01_creation/002_ones.rs`. Reuse your completed `rumpy::zeros` operation.
 
 Your `zeros` implementation now lives in `src/creation/zeros.rs`. Do not edit it

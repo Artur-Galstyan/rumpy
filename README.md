@@ -57,16 +57,24 @@ Active exercise implementations are not library modules. An unfinished exercise 
 fail without breaking the completed library. `cargo test` still includes unfinished
 exercise binaries and can therefore fail intentionally.
 
-After a pushed implementation meets its contract, the author moves **your code**
-into a topic module under `src/` and exposes it through `lib.rs`. The old exercise
-becomes a test runner against that public API. Its tests stay as regression checks.
-A passing test result permits graduation, not automatic replacement with an answer.
+**You own graduation and refactoring.** After an exercise passes, you choose the
+module layout, move your implementation into `src/`, and expose it through `lib.rs`.
+You also convert the old exercise into a public-API test runner without removing
+its assertions. The author does not move your functions or rewrite your library.
 
-If a later exercise extends an operation, the existing library implementation stays
-in place. The new exercise starts from a copy of your implementation and adds the
-new task. After verification, your extended version replaces the library version.
-Temporary duplication keeps the library usable while you work. A signature change
-must include an explicit migration and updated callers without weakening their tests.
+Refactor earlier functions when a more general operation makes shared behaviour
+clear. For example, `ones` can call `full(shape, 1.0)`. If `zeros` also calls `full`,
+`full` must no longer call `zeros`, or the functions recurse indefinitely.
+You can group related functions in one module rather than keep one file per function.
+
+For an extension, the author can provide a new exercise based on your current code.
+Your library remains in place while you work. You decide how to merge the extension,
+update callers, and preserve earlier behaviour. The lesson includes a short checklist.
+
+The author reviews your pushed work and reports problems without fixing your code.
+The author can maintain Rustlings metadata and progress records. A solved exercise
+is not recorded as graduated until you move it and connect its public-API tests.
+The existing `zeros` and `ones` remain where they are; this policy does not undo them.
 
 ## Reference solutions
 
@@ -78,8 +86,8 @@ You can also open it directly. These files are spoilers for comparison, not libr
 
 ```sh
 git pull --ff-only
-# Edit exercises/01_creation/003_full.rs and use Rustlings.
-git add exercises/01_creation/003_full.rs
+# Solve the exercise, then move/refactor your code when ready.
+git add exercises/ src/
 git commit -m "Implement full"
 git push origin main
 ```
@@ -89,8 +97,10 @@ Any new learner commit triggers one next exercise per check, even if tests fail.
 Several commits form one batch. Bot commits never trigger another exercise.
 No new learner commit means no new exercise or routine notification.
 
-The job also checks pending implementations for graduation. Failed attempts remain
-untouched. The next exercise avoids broken dependencies where possible.
+The job reviews your attempts and your own library changes, then updates bookkeeping.
+It never moves or refactors your implementations automatically. Passing tests and
+completed graduation are not gates for the next exercise. The next task avoids
+broken or unavailable dependencies where possible.
 Unpushed work and other branches are not visible to the job.
 Commit local work before a pull. If Git reports a conflict, inspect it rather than
 discard your work. This job remains separate from paper spaced repetition.

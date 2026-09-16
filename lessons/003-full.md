@@ -70,8 +70,9 @@ array.shape() -> &[usize]
 array.as_slice() -> &[f64]
 ```
 
-Reuse `rumpy::zeros` for shape and storage. Use Rust loops or slice methods to change the stored values.
-Do not edit the library functions for this task. Do not use NumPy or another numerical crate in the Rust function.
+You may reuse `rumpy::zeros` for shape and storage in the initial exercise.
+Use Rust loops or slice methods to change the stored values. After the tests pass,
+you own the library refactor described below. Do not use NumPy or another numerical crate in the Rust function.
 NumPy supplies independent oracle data, not your function body.
 
 ## Checks and comparison
@@ -89,10 +90,37 @@ After your attempt, compare with `solutions/01_creation/003_full.rs`.
 The reference contains the same contract tests and stays separate from your library.
 
 Rustlings watches the current exercise only. After a dependency change, press `c` for a full check.
-A fresh Rustlings state can start at `zeros`. Complete its check, then press `n` to continue through the completed exercises.
+A fresh Rustlings state can start at `001_zeros`. Complete its check, then press `n` to continue through the completed exercises.
 
 Commit and push your attempt to `main`. A new learner commit triggers one next exercise, even if this task remains incomplete.
-After verification, your `full` function can graduate to `src/creation/full.rs` and `rumpy::full`.
+
+## Your library checklist
+
+After the exercise passes, do the library work yourself. The author will review it,
+not do it for you.
+
+1. Choose a module under `src/` and move your `full` implementation there. A shared
+   creation module is also valid; `src/creation/full.rs` is only a suggested layout.
+2. Expose `rumpy::full`. Replace the exercise implementation with an import of that
+   public function. Keep the existing test module and all its assertions intact.
+3. Consider refactoring `ones` to call `full(shape, 1.0)`, and `zeros` to call
+   `full(shape, 0.0)`. If you choose that structure, first make `full` allocate and
+   construct its array without calling `zeros` or `ones`. Otherwise you create a
+   recursive dependency cycle. Preserve scalar, empty-axis, and ownership behaviour.
+4. Keep `fn main()` and a clearly labelled `// TODO (historical, completed):` comment
+   in the exercise runner for Rustlings. The author can update `skip_check_unsolved`
+   and progress records after your push. That metadata is not part of the math task.
+5. Run the regression checks, inspect your diff, and commit both exercise and library changes.
+
+```sh
+cargo fmt --check
+cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full
+cargo clippy --all-targets -- -D warnings
+```
+
+Rustlings does not watch `src/`; use these Cargo checks after library changes.
+The expected-red author checker is not your completion command.
+You can also push an incomplete attempt. Graduation is not a gate for the next exercise.
 
 ## API source
 
