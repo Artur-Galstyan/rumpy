@@ -1,8 +1,8 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-zeros and ones now live in src/creation/. Your next exercise is full.
-Read lessons/003-full.md, then edit exercises/01_creation/003_full.rs. Press h for hints.
+zeros, ones, and full now live in src/creation/. Your next exercise is arange.
+Read lessons/004-arange.md, then edit exercises/01_creation/004_arange.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -74,6 +74,7 @@ The old exercise tests rumpy::ones. The original hints remain above for review.
 [[exercises]]
 name = "003_full"
 dir = "01_creation"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -95,4 +96,34 @@ Hint 4 - Return value:
 Use mutable-slice access to change the stored values. Return the owned Array.
 Remove the temporary todo! only when the function satisfies its contract.
 The reference is solutions/01_creation/003_full.rs; compare after your attempt.
+
+Completed: your implementation now lives in src/creation/full.rs.
+The old exercise tests rumpy::full. Add a historical // TODO comment to that
+runner so Rustlings author checks can accept it. Keep the assertions intact.
+"""
+
+[[exercises]]
+name = "004_arange"
+dir = "01_creation"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Interval:
+Read lessons/004-arange.md. The start is included only when it is below stop.
+The stop is excluded. An empty result still has one axis of length zero.
+
+Hint 2 - Step:
+Reject a zero or negative step before you consider the interval. The required
+panic message contains: step must be positive.
+
+Hint 3 - Arithmetic:
+An endpoint fits in i32, but a final increment or interval span might not.
+Consider wider integer arithmetic before any addition or subtraction.
+
+Hint 4 - Container:
+Collect the values into owned f64 storage. Derive the one-axis shape from the
+number of stored values. Array::from_vec checks that these agree.
+The reference is solutions/01_creation/004_arange.rs; compare after your attempt.
 """

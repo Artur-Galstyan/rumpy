@@ -1,8 +1,10 @@
 """Check a newly authored publication without editing the learner's files.
 
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
-describe zeros/ones(shape) and full(shape, scalar fill_value). Extend oracle
-calls explicitly when the course introduces other signatures.
+describe zeros/ones(shape), full(shape, scalar), and arange(start, stop, step).
+Known missing historical markers remain visible baseline errors. A disposable
+project excludes those runners from a second Rustlings check. Their complete
+regression tests and references still run, without edits to learner source.
 """
 from pathlib import Path
 import json
@@ -66,9 +68,63 @@ def main():
             marker = "#[cfg(test)]"
             if marker not in exercise or marker not in reference:
                 raise ValueError(f"Missing contract tests for {name}")
-            if exercise.split(marker, 1)[1].strip() != reference.split(marker, 1)[1].strip():
+            exercise_tests = exercise.split(marker, 1)[1].strip()
+            reference_tests = reference.split(marker, 1)[1].strip()
+            # Graduation can change only this test import, not the assertions.
+            for operation, record in graduated.items():
+                if record["exercise"] == name:
+                    exercise_tests = exercise_tests.replace(
+                        f"use {record['public_api']};", f"use super::{operation};", 1
+                    )
+            if exercise_tests != reference_tests:
                 raise ValueError(f"Reference and exercise tests differ for {name}")
-        run(["rustlings", "dev", "check", "--require-solutions"], work)
+            run(["rustfmt", "--edition", "2024", "--check",
+                 str(work / "solutions" / relative)], work)
+            run(["cargo", "test", "--bin", f"{name}_sol"], work)
+
+        declared_missing = set(progress.get("author_check_baseline", {}).get("missing_todo", []))
+        if not declared_missing <= graduated_exercises:
+            raise ValueError("Only graduated runners may have a historical-marker baseline")
+        missing = set()
+        for name in declared_missing:
+            item = exercises[name]
+            relative = Path(item.get("dir") or "") / f"{name}.rs"
+            if "// TODO" not in (work / "exercises" / relative).read_text():
+                missing.add(name)
+        if missing:
+            result = subprocess.run(
+                ["rustlings", "dev", "check", "--require-solutions"],
+                cwd=work, text=True, capture_output=True, timeout=180,
+            )
+            output = result.stdout + result.stderr
+            expected_errors = [
+                f"Error: Didn't find any `// TODO` comment in the file `exercises/{exercises[name]['dir']}/{name}.rs`."
+                for name in missing
+            ]
+            if result.returncode == 0 or not any(error in output for error in expected_errors):
+                raise RuntimeError(f"Unexpected Rustlings baseline result:\n{output}")
+            print(f"BASELINE ERROR: missing historical // TODO in {sorted(missing)}")
+            # Move unchanged files outside Rustlings directories only in this copy.
+            rustlings_work = Path(temp) / "rustlings-metadata-check"
+            shutil.copytree(work, rustlings_work, ignore=shutil.ignore_patterns("target"))
+            parts = (rustlings_work / "info.toml").read_text().split("[[exercises]]")
+            kept = [parts[0]]
+            for part in parts[1:]:
+                if tomllib.loads(part)["name"] not in missing:
+                    kept.append("[[exercises]]" + part)
+            (rustlings_work / "info.toml").write_text("".join(kept))
+            for name in missing:
+                relative = Path(exercises[name].get("dir") or "") / f"{name}.rs"
+                for folder in ("exercises", "solutions"):
+                    source = rustlings_work / folder / relative
+                    destination = rustlings_work / "baseline-preserved" / folder / relative
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.move(source, destination)
+            run(["rustlings", "dev", "update"], rustlings_work)
+            run(["rustlings", "dev", "check", "--require-solutions"], rustlings_work)
+            print("PASS isolated Rustlings metadata check; full-repository baseline error remains")
+        else:
+            run(["rustlings", "dev", "check", "--require-solutions"], work)
 
         # Install references only in this disposable copy, never into src/.
         for name, item in exercises.items():
@@ -106,9 +162,14 @@ def main():
                 elif name in {"zeros", "ones"}:
                     arguments = "expected_shape"
                     data = json.dumps(case["data"])
+                elif name == "arange":
+                    arguments = f"{case['start']}i32, {case['stop']}i32, {case['step']}i32"
+                    values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
+                    data = f"[{values}]"
                 else:
                     raise ValueError(f"Unsupported oracle signature: {name}")
                 checks.extend([
+                    "    {",  # Separate scopes avoid a deep debug-info shadow chain.
                     f"    let expected_shape: &[usize] = &{shape};",
                     f"    let expected_data: &[f64] = &{data};",
                     f"    let a = {callable_name}({arguments});",
@@ -117,6 +178,7 @@ def main():
                     "    assert_eq!(a.as_slice().len(), expected_data.len());",
                     "    for (actual, expected) in a.as_slice().iter().zip(expected_data) {",
                     "        assert_eq!(actual.to_bits(), expected.to_bits());",
+                    "    }",
                     "    }",
                 ])
                 case_count += 1
@@ -128,7 +190,7 @@ def main():
         )
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
         print(f"PASS {case_count} saved NumPy cases, including shape and exact value bits")
-    print("PASS publication checks. Learner files remain untouched.")
+    print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")
 
 
 if __name__ == "__main__":

@@ -16,23 +16,29 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [003 — full](lessons/003-full.md) and edit
-`exercises/01_creation/003_full.rs`. Your `zeros` and `ones` now live in `src/creation/`.
-The new task copies your `ones` code and adds a scalar fill parameter.
-The public `ones` signature stays unchanged. `full` is a separate operation.
-If Rustlings starts at `001_zeros`, check it and press `n`, then repeat for `002_ones`.
+**Current task:** read [004 — arange](lessons/004-arange.md) and edit
+`exercises/01_creation/004_arange.rs`. Build a one-dimensional range with integer
+endpoints and a positive step. The output uses owned `f64` storage.
+Your `zeros`, `ones`, and `full` now live in `src/creation/`.
+Your `creation.rs` layout and `ones` → `full` → `zeros` dependency direction remain intact.
+If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
-Public function names stay unchanged: `rumpy::zeros`, `rumpy::ones`, and later `rumpy::full`.
-After this filename migration, Rustlings may need to check completed exercises again.
-Your code and tests remain intact. There is no need to solve those exercises again.
+Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
+The `003_full` tests pass through your public API. Its runner lacks Rustlings' required
+historical marker. Add this comment to `exercises/01_creation/003_full.rs` without changing its tests:
+
+```rust
+// TODO (historical, completed): implementation moved to rumpy::full.
+```
+
 ```sh
-rustlings hint 003_full
-rustlings run 003_full
+rustlings hint 004_arange
+rustlings run 004_arange
 # Headless checks:
-cargo test --bin 003_full
-cargo test --bin 001_zeros --bin 002_ones
+cargo test --bin 004_arange
+cargo test --bin 001_zeros --bin 002_ones --bin 003_full
 ```
 
 Rustlings success output needs a real terminal. Use Cargo for headless checks.
@@ -42,8 +48,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/01_creation/003_full.rs   active task: edit this
-solutions/01_creation/003_full.rs   reference: compare after your attempt
+exercises/01_creation/004_arange.rs active task: edit this
+solutions/01_creation/004_arange.rs reference: compare after your attempt
+src/creation/full.rs            your completed implementation
+exercises/01_creation/003_full.rs   original tests against rumpy::full
 src/creation/ones.rs            your completed implementation
 exercises/01_creation/002_ones.rs   original tests against rumpy::ones
 src/creation/zeros.rs           your completed implementation
@@ -88,7 +96,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement full"
+git commit -m "Implement arange"
 git push origin main
 ```
 
@@ -109,7 +117,7 @@ discard your work. This job remains separate from paper spaced repetition.
 
 - [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
 - `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
-- `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones` checks the completed library and scaffold.
+- `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full` checks the completed library and scaffold.
 - `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
 - `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 
@@ -121,3 +129,8 @@ Do not remove their regression tests. The author checks are not a learner comple
 (Python 3.11+, Rustlings, and Cargo required). It checks the intentionally failing new stub,
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
+
+The current full-repository Rustlings author check fails because `003_full` lacks its historical marker.
+The checker reports that baseline error. A second disposable project excludes that runner and its reference from the Rustlings check.
+It still runs that runner's full tests, its reference tests, and the public-API oracle checks separately.
+It does not add a marker to your source. The normal Rustlings check resumes after you add the comment.
