@@ -1,21 +1,11 @@
 // Exercise 004: numpy.arange with i32 endpoints and a positive i32 step.
 // Read lessons/004-arange.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Return a one-dimensional owned f64 array: start inclusive, stop exclusive.
-/// Panic with "step must be positive" for step <= 0, even for an empty interval.
-/// Scope: i32 inputs and at most 100,000 output elements. No fractional steps.
-pub fn arange(start: i32, stop: i32, step: i32) -> Array {
-    // TODO: Build the half-open integer sequence and preserve a one-axis shape.
-    let _ = (start, stop, step);
-    todo!("Build arange with a positive step")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::arange;
+    use rumpy::arange;
 
     fn assert_range(start: i32, stop: i32, step: i32, expected: &[f64]) {
         let a = arange(start, stop, step);

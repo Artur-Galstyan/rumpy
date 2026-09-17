@@ -6,6 +6,9 @@ row-major f64 arrays until a later lesson explicitly extends that scope.
 
 ## Trigger and safety
 
+- The learner is learning Rust. Do not give complete solutions or full function bodies
+  for exercises. Explain concepts, edge cases, and standard library methods, but let
+  the learner write the code.
 - A new learner commit batch on origin/main triggers exactly one next exercise. Passing
   tests, approval, and a separate completion message are not gates. Bot commits do not count.
 - No new learner commit means no new exercise or routine notification. Paper SR stays separate.
