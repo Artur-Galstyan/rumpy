@@ -1,8 +1,8 @@
 {
-  "current_exercise": "005_eye",
-  "sequence": 5,
-  "last_handled_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
-  "next_candidate": "reshape: owned row-major array with an explicit compatible shape",
+  "current_exercise": "006_reshape",
+  "sequence": 6,
+  "last_handled_learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
+  "next_candidate": "transpose: copy a two-axis array with swapped axes",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -38,15 +38,23 @@
       "regression_runner": "exercises/01_creation/004_arange.rs",
       "exercise": "004_arange",
       "source_learner_commit": "059a926cc70f04c2d6797ddb53012df9fe67c5f9"
+    },
+    "eye": {
+      "implementation": "src/creation/eye.rs",
+      "public_api": "rumpy::eye",
+      "learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
+      "regression_runner": "exercises/01_creation/005_eye.rs",
+      "source_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
+      "exercise": "005_eye"
     }
   },
   "active": {
-    "eye": {
-      "implementation": "exercises/01_creation/005_eye.rs",
-      "library_target": "src/creation/eye.rs",
+    "reshape": {
+      "implementation": "exercises/02_shape/006_reshape.rs",
+      "library_target": "src/shape/reshape.rs",
       "extends": null,
-      "source_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
-      "exercise": "005_eye"
+      "source_learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
+      "exercise": "006_reshape"
     }
   },
   "review_notes": [
@@ -55,9 +63,12 @@
     "003_full lacks the historical // TODO marker required by Rustlings dev check. The learner must add it.",
     "arange is learner-graduated: public exports and original regression assertions are connected. All 11 contract tests and 1652 independent NumPy 2.4.3 cases passed.",
     "arange widens endpoints before subtraction and iteration. The positive-step guard precedes the empty-interval return. No correctness issue found within the documented scope.",
-    "004_arange also lacks the historical // TODO marker. Both missing markers remain learner-owned edits."
+    "004_arange also lacks the historical // TODO marker. Both missing markers remain learner-owned edits.",
+    "eye is learner-graduated: public exports and all 9 original contract tests are connected. An independent NumPy 2.4.3 review passed 1209 shapes and 24811424 bit-exact values.",
+    "eye correctly uses the column count as row width and bounds the diagonal by the smaller dimension. No correctness issue found within rows, cols <= 1000.",
+    "005_eye also lacks the historical // TODO marker. All three missing markers remain learner-owned edits. The author changed no learner source or earlier runner."
   ],
   "author_check_baseline": {
-    "missing_todo": ["003_full", "004_arange"]
+    "missing_todo": ["003_full", "004_arange", "005_eye"]
   }
 }

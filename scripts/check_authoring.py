@@ -2,7 +2,7 @@
 
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
-and eye(rows, cols).
+eye(rows, cols), and reshape(array, shape) -> Result<Array, ShapeError>.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
 regression tests and references still run, without edits to learner source.
@@ -138,6 +138,7 @@ def main():
         declarations = []
         checks = ["#[test]", "fn matches_saved_numpy_fixtures() {"]
         case_count = 0
+        rejected_count = 0
         for fixture_path in sorted((work / "validation").glob("*-numpy.json")):
             name = fixture_path.name.removesuffix("-numpy.json")
             fixture = json.loads(fixture_path.read_text())
@@ -155,7 +156,13 @@ def main():
                 ])
                 callable_name = f"{module}::{name}"
             for case in fixture["cases"]:
+                # Bound each function's IR/debug-info size as the fixture set grows.
+                # Keep all cases, but avoid one enormous Rust test function.
+                if case_count and case_count % 64 == 0:
+                    checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
                 shape = json.dumps(case["shape"])
+                setup = []
+                result_suffix = ""
                 if name == "full":
                     arguments = f"expected_shape, f64::from_bits({case['fill_bits']}u64)"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
@@ -171,13 +178,23 @@ def main():
                     arguments = f"{case['rows']}usize, {case['cols']}usize"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
+                elif name == "reshape":
+                    input_values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
+                    setup = [
+                        f"    let input = rumpy::Array::from_vec(vec![{input_values}], vec!{json.dumps(case['input_shape'])}).unwrap();"
+                    ]
+                    arguments = "&input, expected_shape"
+                    values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
+                    data = f"[{values}]"
+                    result_suffix = ".unwrap()"
                 else:
                     raise ValueError(f"Unsupported oracle signature: {name}")
                 checks.extend([
                     "    {",  # Separate scopes avoid a deep debug-info shadow chain.
                     f"    let expected_shape: &[usize] = &{shape};",
                     f"    let expected_data: &[f64] = &{data};",
-                    f"    let a = {callable_name}({arguments});",
+                    *setup,
+                    f"    let a = {callable_name}({arguments}){result_suffix};",
                     "    assert_eq!(a.shape(), expected_shape);",
                     f"    assert_eq!(a.size(), {case['size']});",
                     "    assert_eq!(a.as_slice().len(), expected_data.len());",
@@ -187,6 +204,18 @@ def main():
                     "    }",
                 ])
                 case_count += 1
+            for case in fixture.get("rejected", []):
+                if name != "reshape" or case["numpy_error"] != "ValueError":
+                    raise ValueError(f"Unsupported rejected oracle case: {name}")
+                values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
+                checks.extend([
+                    "    {",
+                    f"    let input = rumpy::Array::from_vec(vec![{values}], vec!{json.dumps(case['input_shape'])}).unwrap();",
+                    f"    let target_shape: &[usize] = &{json.dumps(case['shape'])};",
+                    f"    assert_eq!({callable_name}(&input, target_shape), Err(rumpy::ShapeError::LengthMismatch {{ expected: {case['expected']}, actual: {case['actual']} }}));",
+                    "    }",
+                ])
+                rejected_count += 1
         if case_count == 0:
             raise ValueError("No NumPy oracle cases found")
         checks.append("}")
@@ -195,6 +224,7 @@ def main():
         )
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
         print(f"PASS {case_count} saved NumPy cases, including shape and exact value bits")
+        print(f"PASS {rejected_count} saved NumPy shape rejections with exact scaffold errors")
     print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")
 
 

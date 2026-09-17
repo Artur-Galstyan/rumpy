@@ -1,8 +1,8 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-zeros, ones, full, and arange now live in src/creation/. Your next exercise is eye.
-Read lessons/005-eye.md, then edit exercises/01_creation/005_eye.rs. Press h for hints.
+Your five creation functions now live in src/creation/. Your next exercise is reshape.
+Read lessons/006-reshape.md, then edit exercises/02_shape/006_reshape.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -136,6 +136,7 @@ runner so Rustlings author checks can accept it. Keep the assertions intact.
 [[exercises]]
 name = "005_eye"
 dir = "01_creation"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -157,4 +158,34 @@ Hint 4 - Bounds:
 A main-diagonal position requires both a valid row and a valid column.
 Check what happens when either dimension is zero. Mutable-slice access preserves shape.
 The reference is solutions/01_creation/005_eye.rs; compare after your attempt.
+
+Completed: your implementation now lives in src/creation/eye.rs.
+The old exercise tests rumpy::eye. Add a historical // TODO comment to that
+runner so Rustlings author checks can accept it. Keep the assertions intact.
+"""
+
+[[exercises]]
+name = "006_reshape"
+dir = "02_shape"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Values:
+Read lessons/006-reshape.md. Reshape changes the axes, not the flat value order.
+It is not transpose. This exercise always returns independent owned storage.
+
+Hint 2 - Ownership:
+The function borrows both inputs. Consider how a slice can become an owned Vec.
+An output with the same shape still must not share mutable data with the input.
+
+Hint 3 - Validation:
+An empty shape requires one value. A zero-length axis requires none.
+Inspect Array::from_vec and ShapeError before you duplicate their validation logic.
+
+Hint 4 - Errors:
+Keep validation errors in the Result. Do not turn an incompatible shape into a panic.
+Copy floating-point values directly rather than recalculate them.
+The reference is solutions/02_shape/006_reshape.rs; compare after your attempt.
 """

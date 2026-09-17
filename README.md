@@ -16,18 +16,18 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [005 — eye](lessons/005-eye.md) and edit
-`exercises/01_creation/005_eye.rs`. Build a rectangular matrix with ones on its main
-diagonal and positive zeros elsewhere. Both dimensions are explicit.
-Your `zeros`, `ones`, `full`, and `arange` now live in `src/creation/`.
-Your public `arange` passed all 11 original tests and 1,652 independent NumPy cases.
+**Current task:** read [006 — reshape](lessons/006-reshape.md) and edit
+`exercises/02_shape/006_reshape.rs`. Copy an array into an explicit compatible shape.
+Keep the flat row-major value order and return `ShapeError` for incompatible shapes.
+Your five creation functions now live in `src/creation/`.
+Your public `eye` passed all 9 original tests and 1,209 independent NumPy cases.
 Your `creation.rs` layout and `ones` → `full` → `zeros` dependency direction remain intact.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The `003_full` and `004_arange` tests pass through your public API. Their runners lack Rustlings' required
+The `003_full`, `004_arange`, and `005_eye` tests pass through your public API. Their runners lack Rustlings' required
 historical markers. Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -36,14 +36,17 @@ historical markers. Add the corresponding comment to each file without a test ch
 
 // In exercises/01_creation/004_arange.rs:
 // TODO (historical, completed): implementation moved to rumpy::arange.
+
+// In exercises/01_creation/005_eye.rs:
+// TODO (historical, completed): implementation moved to rumpy::eye.
 ```
 
 ```sh
-rustlings hint 005_eye
-rustlings run 005_eye
+rustlings hint 006_reshape
+rustlings run 006_reshape
 # Headless checks:
-cargo test --bin 005_eye
-cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange
+cargo test --bin 006_reshape
+cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye
 ```
 
 Rustlings success output needs a real terminal. Use Cargo for headless checks.
@@ -53,8 +56,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/01_creation/005_eye.rs    active task: edit this
-solutions/01_creation/005_eye.rs    reference: compare after your attempt
+exercises/02_shape/006_reshape.rs  active task: edit this
+solutions/02_shape/006_reshape.rs  reference: compare after your attempt
+src/creation/eye.rs                your completed implementation
+exercises/01_creation/005_eye.rs    original tests against rumpy::eye
 src/creation/arange.rs             your completed implementation
 exercises/01_creation/004_arange.rs original tests against rumpy::arange
 src/creation/full.rs            your completed implementation
@@ -103,7 +108,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement eye"
+git commit -m "Implement reshape"
 git push origin main
 ```
 
@@ -124,7 +129,7 @@ discard your work. This job remains separate from paper spaced repetition.
 
 - [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
 - `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
-- `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange` checks the completed library and scaffold.
+- `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye` checks the completed library and scaffold.
 - `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
 - `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 
@@ -137,7 +142,7 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full` and `004_arange` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, and `005_eye` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
