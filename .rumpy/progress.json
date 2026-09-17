@@ -1,8 +1,8 @@
 {
-  "current_exercise": "004_arange",
-  "sequence": 4,
-  "last_handled_learner_commit": "059a926cc70f04c2d6797ddb53012df9fe67c5f9",
-  "next_candidate": "eye: a two-dimensional identity matrix with an explicit shape",
+  "current_exercise": "005_eye",
+  "sequence": 5,
+  "last_handled_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
+  "next_candidate": "reshape: owned row-major array with an explicit compatible shape",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -30,23 +30,34 @@
       "exercise": "003_full",
       "copied_from": "src/creation/ones.rs",
       "source_learner_commit": "ca1d4b1f29d700a77f34c8bad8f5363bdddd3675"
+    },
+    "arange": {
+      "implementation": "src/creation/arange.rs",
+      "public_api": "rumpy::arange",
+      "learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
+      "regression_runner": "exercises/01_creation/004_arange.rs",
+      "exercise": "004_arange",
+      "source_learner_commit": "059a926cc70f04c2d6797ddb53012df9fe67c5f9"
     }
   },
   "active": {
-    "arange": {
-      "implementation": "exercises/01_creation/004_arange.rs",
-      "library_target": "src/creation/arange.rs",
+    "eye": {
+      "implementation": "exercises/01_creation/005_eye.rs",
+      "library_target": "src/creation/eye.rs",
       "extends": null,
-      "source_learner_commit": "059a926cc70f04c2d6797ddb53012df9fe67c5f9",
-      "exercise": "004_arange"
+      "source_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
+      "exercise": "005_eye"
     }
   },
   "review_notes": [
     "full public-API regression tests pass. ones delegates to full, which delegates to zeros, without a cycle.",
     "The learner chose src/creation.rs. No learner implementation or earlier runner was changed by the author.",
-    "003_full lacks the historical // TODO marker required by Rustlings dev check. The learner must add it."
+    "003_full lacks the historical // TODO marker required by Rustlings dev check. The learner must add it.",
+    "arange is learner-graduated: public exports and original regression assertions are connected. All 11 contract tests and 1652 independent NumPy 2.4.3 cases passed.",
+    "arange widens endpoints before subtraction and iteration. The positive-step guard precedes the empty-interval return. No correctness issue found within the documented scope.",
+    "004_arange also lacks the historical // TODO marker. Both missing markers remain learner-owned edits."
   ],
   "author_check_baseline": {
-    "missing_todo": ["003_full"]
+    "missing_todo": ["003_full", "004_arange"]
   }
 }

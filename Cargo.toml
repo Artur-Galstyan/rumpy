@@ -8,6 +8,8 @@ bin = [
   { name = "003_full_sol", path = "solutions/01_creation/003_full.rs" },
   { name = "004_arange", path = "exercises/01_creation/004_arange.rs" },
   { name = "004_arange_sol", path = "solutions/01_creation/004_arange.rs" },
+  { name = "005_eye", path = "exercises/01_creation/005_eye.rs" },
+  { name = "005_eye_sol", path = "solutions/01_creation/005_eye.rs" },
 ]
 
 [package]

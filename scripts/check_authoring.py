@@ -1,7 +1,8 @@
 """Check a newly authored publication without editing the learner's files.
 
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
-describe zeros/ones(shape), full(shape, scalar), and arange(start, stop, step).
+describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
+and eye(rows, cols).
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
 regression tests and references still run, without edits to learner source.
@@ -164,6 +165,10 @@ def main():
                     data = json.dumps(case["data"])
                 elif name == "arange":
                     arguments = f"{case['start']}i32, {case['stop']}i32, {case['step']}i32"
+                    values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
+                    data = f"[{values}]"
+                elif name == "eye":
+                    arguments = f"{case['rows']}usize, {case['cols']}usize"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
                 else:
