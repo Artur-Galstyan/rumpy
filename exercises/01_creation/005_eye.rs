@@ -1,21 +1,11 @@
 // Exercise 005: numpy.eye(rows, cols), main diagonal only.
 // Read lessons/005-eye.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Return an owned row-major f64 matrix with shape [rows, cols].
-/// Put 1.0 where row == column and positive 0.0 elsewhere.
-/// Scope: rows and cols are each at most 1,000. Zero-length axes are valid.
-pub fn eye(rows: usize, cols: usize) -> Array {
-    // TODO: Build a rectangular matrix with ones on its main diagonal.
-    let _ = (rows, cols);
-    todo!("Build eye with an explicit two-axis shape")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::eye;
+    use rumpy::eye;
 
     fn assert_matrix(rows: usize, cols: usize, expected: &[f64]) {
         let a = eye(rows, cols);

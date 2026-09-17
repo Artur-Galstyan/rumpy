@@ -4,3 +4,4 @@
 !/.vscode/extensions.json
 /.DS_Store
 **/.DS_Store
+.venv
