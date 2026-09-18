@@ -7,8 +7,7 @@ use rumpy::{Array, ShapeError};
 /// The input remains unchanged. The output owns independent data and shape.
 pub fn reshape(a: &Array, shape: &[usize]) -> Result<Array, ShapeError> {
     // TODO: Preserve the flat values and validate the requested shape.
-    let _ = (a, shape);
-    todo!("Reshape into independent owned storage")
+    Array::from_vec(a.as_slice().to_vec(), shape.to_vec())
 }
 
 fn main() {}
