@@ -12,6 +12,8 @@ bin = [
   { name = "005_eye_sol", path = "solutions/01_creation/005_eye.rs" },
   { name = "006_reshape", path = "exercises/02_shape/006_reshape.rs" },
   { name = "006_reshape_sol", path = "solutions/02_shape/006_reshape.rs" },
+  { name = "007_transpose", path = "exercises/02_shape/007_transpose.rs" },
+  { name = "007_transpose_sol", path = "solutions/02_shape/007_transpose.rs" },
 ]
 
 [package]

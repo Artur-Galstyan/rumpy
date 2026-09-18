@@ -2,7 +2,9 @@
 
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
-eye(rows, cols), and reshape(array, shape) -> Result<Array, ShapeError>.
+eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
+transpose(array) -> Array. Solved active tasks and their public copies stay
+distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
 regression tests and references still run, without edits to learner source.
@@ -43,6 +45,10 @@ def main():
     exercises = {item["name"]: item for item in metadata["exercises"]}
     current = progress["current_exercise"]
     graduated = progress.get("graduated", {})
+    solved_active = {
+        name: record for name, record in progress.get("active", {}).items()
+        if record.get("status") == "solved_pending_regression_connection"
+    }
     graduated_exercises = {item["exercise"] for item in graduated.values()}
     if current in graduated_exercises:
         raise ValueError("The current publication needs an unfinished task")
@@ -59,6 +65,20 @@ def main():
         run(["cargo", "test", "--lib", "--test", "scaffold"], work)
         for name in sorted(graduated_exercises):
             run(["cargo", "test", "--bin", name], work)
+        for operation, record in solved_active.items():
+            name = record["exercise"]
+            run(["cargo", "test", "--bin", name], work)
+            item = exercises[name]
+            source = work / "exercises" / (item.get("dir") or "") / f"{name}.rs"
+            tests = source.read_text().split("#[cfg(test)]", 1)[1]
+            original_import = f"use super::{operation};"
+            if tests.count(original_import) != 1:
+                raise ValueError(f"Unexpected active test import for {name}")
+            # Test the public copy without changing the learner's actual runner.
+            public_tests = tests.replace(original_import, f"use {record['public_api']};", 1)
+            test_name = f"author_{name}_public"
+            (work / "tests" / f"{test_name}.rs").write_text("#[cfg(test)]" + public_tests)
+            run(["cargo", "test", "--test", test_name], work)
         run(["cargo", "test", "--bin", current], work, unfinished=True)
 
         # Require the same contract tests in each independent reference file.
@@ -144,6 +164,8 @@ def main():
             fixture = json.loads(fixture_path.read_text())
             if name in graduated:
                 callable_name = graduated[name]["public_api"]
+            elif name in solved_active:
+                callable_name = solved_active[name]["public_api"]
             else:
                 exercise_id = progress["active"][name]["exercise"]
                 item = exercises[exercise_id]
@@ -178,15 +200,15 @@ def main():
                     arguments = f"{case['rows']}usize, {case['cols']}usize"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
-                elif name == "reshape":
+                elif name in {"reshape", "transpose"}:
                     input_values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
                     setup = [
                         f"    let input = rumpy::Array::from_vec(vec![{input_values}], vec!{json.dumps(case['input_shape'])}).unwrap();"
                     ]
-                    arguments = "&input, expected_shape"
+                    arguments = "&input, expected_shape" if name == "reshape" else "&input"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
-                    result_suffix = ".unwrap()"
+                    result_suffix = ".unwrap()" if name == "reshape" else ""
                 else:
                     raise ValueError(f"Unsupported oracle signature: {name}")
                 checks.extend([

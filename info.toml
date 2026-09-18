@@ -1,8 +1,8 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your five creation functions now live in src/creation/. Your next exercise is reshape.
-Read lessons/006-reshape.md, then edit exercises/02_shape/006_reshape.rs. Press h for hints.
+Your reshape passes, but its old runner still tests the local copy, not rumpy::reshape.
+Read lessons/007-transpose.md, then edit exercises/02_shape/007_transpose.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -167,6 +167,7 @@ runner so Rustlings author checks can accept it. Keep the assertions intact.
 [[exercises]]
 name = "006_reshape"
 dir = "02_shape"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -188,4 +189,34 @@ Hint 4 - Errors:
 Keep validation errors in the Result. Do not turn an incompatible shape into a panic.
 Copy floating-point values directly rather than recalculate them.
 The reference is solutions/02_shape/006_reshape.rs; compare after your attempt.
+
+Solved: your exercise and public rumpy::reshape pass their contract checks.
+The old exercise still tests its local function. Connect its preserved tests to
+rumpy::reshape before graduation. Keep a historical // TODO comment in the runner.
+"""
+
+[[exercises]]
+name = "007_transpose"
+dir = "02_shape"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Coordinates:
+Read lessons/007-transpose.md. Each input column becomes an output row.
+A shape swap alone does not transpose the flat values.
+
+Hint 2 - Validation:
+Check the input rank before an empty-array shortcut. A vector is not a matrix.
+An empty matrix needs no value traversal, even when its other dimension is huge.
+
+Hint 3 - Row-major order:
+Each input row contains shape()[1] consecutive values. Locate one input coordinate
+before you choose the order of traversal for the output rows.
+
+Hint 4 - Ownership:
+Use a new Vec and an owned swapped shape. Copy values without arithmetic so that
+NaN payloads and signed zeros survive. Array::from_vec validates the final storage.
+The reference is solutions/02_shape/007_transpose.rs; compare after your attempt.
 """

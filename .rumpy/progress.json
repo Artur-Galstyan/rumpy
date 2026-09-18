@@ -1,8 +1,8 @@
 {
-  "current_exercise": "006_reshape",
-  "sequence": 6,
-  "last_handled_learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
-  "next_candidate": "transpose: copy a two-axis array with swapped axes",
+  "current_exercise": "007_transpose",
+  "sequence": 7,
+  "last_handled_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
+  "next_candidate": "sum: reduce all elements to one f64 scalar",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -54,7 +54,19 @@
       "library_target": "src/shape/reshape.rs",
       "extends": null,
       "source_learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
-      "exercise": "006_reshape"
+      "exercise": "006_reshape",
+      "status": "solved_pending_regression_connection",
+      "public_api": "rumpy::reshape",
+      "library_implementation": "src/operations/reshape.rs",
+      "reviewed_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff"
+    },
+    "transpose": {
+      "implementation": "exercises/02_shape/007_transpose.rs",
+      "library_target": "src/operations/transpose.rs",
+      "extends": null,
+      "source_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
+      "exercise": "007_transpose",
+      "status": "unfinished"
     }
   },
   "review_notes": [
@@ -66,7 +78,10 @@
     "004_arange also lacks the historical // TODO marker. Both missing markers remain learner-owned edits.",
     "eye is learner-graduated: public exports and all 9 original contract tests are connected. An independent NumPy 2.4.3 review passed 1209 shapes and 24811424 bit-exact values.",
     "eye correctly uses the column count as row width and bounds the diagonal by the smaller dimension. No correctness issue found within rows, cols <= 1000.",
-    "005_eye also lacks the historical // TODO marker. All three missing markers remain learner-owned edits. The author changed no learner source or earlier runner."
+    "005_eye also lacks the historical // TODO marker. All three missing markers remain learner-owned edits. The author changed no learner source or earlier runner.",
+    "reshape passes its 13 original contract tests. The learner also added rumpy::reshape in src/operations/reshape.rs, but the original runner still tests its local function. Graduation awaits the learner's regression connection.",
+    "The author checker tests the public reshape against an unchanged copy of the original assertions and saved NumPy cases in a disposable project. The learner's operations module, source, imports, and prior runners remain untouched.",
+    "007_transpose swaps exactly two axes into independent row-major storage. Its reference preserves every f64 bit, handles empty axes promptly, and rejects other ranks. NumPy cases and Rust-only extreme/invalid inputs have separate checks."
   ],
   "author_check_baseline": {
     "missing_todo": ["003_full", "004_arange", "005_eye"]
