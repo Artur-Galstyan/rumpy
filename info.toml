@@ -1,8 +1,8 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your reshape passes, but its old runner still tests the local copy, not rumpy::reshape.
-Read lessons/007-transpose.md, then edit exercises/02_shape/007_transpose.rs. Press h for hints.
+Your transpose passes through rumpy::operations::transpose. Reshape still needs its public-API test connection.
+Read lessons/008-sum.md, then edit exercises/03_reductions/008_sum.rs. Press h for hints.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -198,6 +198,7 @@ rumpy::reshape before graduation. Keep a historical // TODO comment in the runne
 [[exercises]]
 name = "007_transpose"
 dir = "02_shape"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -219,4 +220,31 @@ Hint 4 - Ownership:
 Use a new Vec and an owned swapped shape. Copy values without arithmetic so that
 NaN payloads and signed zeros survive. Array::from_vec validates the final storage.
 The reference is solutions/02_shape/007_transpose.rs; compare after your attempt.
+"""
+
+
+[[exercises]]
+name = "008_sum"
+dir = "03_reductions"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Reduction:
+Read lessons/008-sum.md. The output is one f64, not a new Array.
+All ranks use the same flat storage. No shape product is necessary.
+
+Hint 2 - Initial value:
+The accumulator starts at positive zero before the first addition.
+An empty array and a scalar negative zero both exercise this rule.
+
+Hint 3 - Order:
+Visit values in their stored left-to-right order. Floating-point addition can
+change its result if you regroup values. Do not sort or use a pairwise reduction.
+
+Hint 4 - Rust tools:
+Array::as_slice gives borrowed values. A loop or a sequential fold can retain
+an accumulator without allocating a result buffer. Leave the input unchanged.
+The reference is solutions/03_reductions/008_sum.rs; compare after your attempt.
 """

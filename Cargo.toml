@@ -14,6 +14,8 @@ bin = [
   { name = "006_reshape_sol", path = "solutions/02_shape/006_reshape.rs" },
   { name = "007_transpose", path = "exercises/02_shape/007_transpose.rs" },
   { name = "007_transpose_sol", path = "solutions/02_shape/007_transpose.rs" },
+  { name = "008_sum", path = "exercises/03_reductions/008_sum.rs" },
+  { name = "008_sum_sol", path = "solutions/03_reductions/008_sum.rs" },
 ]
 
 [package]

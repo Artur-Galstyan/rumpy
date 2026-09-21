@@ -3,7 +3,7 @@
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
-transpose(array) -> Array. Solved active tasks and their public copies stay
+transpose(array) -> Array, and sum(array) -> f64. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -94,9 +94,16 @@ def main():
             # Graduation can change only this test import, not the assertions.
             for operation, record in graduated.items():
                 if record["exercise"] == name:
-                    exercise_tests = exercise_tests.replace(
-                        f"use {record['public_api']};", f"use super::{operation};", 1
-                    )
+                    if "regression_test_import" in record:
+                        original = record["regression_test_import"]
+                        normalized = record["reference_test_import"]
+                        if exercise_tests.count(original) != 1:
+                            raise ValueError(f"Unexpected regression import for {name}")
+                        exercise_tests = exercise_tests.replace(original, normalized, 1)
+                    else:
+                        exercise_tests = exercise_tests.replace(
+                            f"use {record['public_api']};", f"use super::{operation};", 1
+                        )
             if exercise_tests != reference_tests:
                 raise ValueError(f"Reference and exercise tests differ for {name}")
             run(["rustfmt", "--edition", "2024", "--check",
@@ -182,6 +189,24 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
+                if name == "sum":
+                    # Scalar reductions have no output Array shape or buffer.
+                    values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
+                    expected = (
+                        "    assert!(actual.is_nan());" if case["expected_nan"] else
+                        f"    assert_eq!(actual.to_bits(), {case['expected_bits']}u64);"
+                    )
+                    checks.extend([
+                        "    {",
+                        f"    let input = rumpy::Array::from_vec(vec![{values}], vec!{json.dumps(case['input_shape'])}).unwrap();",
+                        "    let before: Vec<u64> = input.as_slice().iter().map(|v| v.to_bits()).collect();",
+                        f"    let actual = {callable_name}(&input);",
+                        expected,
+                        "    assert_eq!(input.as_slice().iter().map(|v| v.to_bits()).collect::<Vec<_>>(), before);",
+                        "    }",
+                    ])
+                    case_count += 1
+                    continue
                 shape = json.dumps(case["shape"])
                 setup = []
                 result_suffix = ""
@@ -245,7 +270,7 @@ def main():
             "\n".join(declarations + checks) + "\n"
         )
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
-        print(f"PASS {case_count} saved NumPy cases, including shape and exact value bits")
+        print(f"PASS {case_count} saved NumPy cases, including array shapes, exact non-NaN bits, and reduction NaN classes")
         print(f"PASS {rejected_count} saved NumPy shape rejections with exact scaffold errors")
     print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")
 

@@ -1,8 +1,8 @@
 {
-  "current_exercise": "007_transpose",
-  "sequence": 7,
-  "last_handled_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
-  "next_candidate": "sum: reduce all elements to one f64 scalar",
+  "current_exercise": "008_sum",
+  "sequence": 8,
+  "last_handled_learner_commit": "fa13c6ac7a6dd6200bbad81e3457ae7a6d63e228",
+  "next_candidate": "mean: reduce all elements to one f64 scalar with explicit empty-array semantics",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -46,6 +46,16 @@
       "regression_runner": "exercises/01_creation/005_eye.rs",
       "source_learner_commit": "3c799f23a6addad69d4dbb62362513dcfcd41a48",
       "exercise": "005_eye"
+    },
+    "transpose": {
+      "implementation": "src/operations/transpose.rs",
+      "public_api": "rumpy::operations::transpose",
+      "learner_commit": "fa13c6ac7a6dd6200bbad81e3457ae7a6d63e228",
+      "regression_runner": "exercises/02_shape/007_transpose.rs",
+      "exercise": "007_transpose",
+      "source_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
+      "regression_test_import": "use rumpy::{Array, operations::transpose};",
+      "reference_test_import": "use super::transpose;\n    use rumpy::Array;"
     }
   },
   "active": {
@@ -60,12 +70,12 @@
       "library_implementation": "src/operations/reshape.rs",
       "reviewed_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff"
     },
-    "transpose": {
-      "implementation": "exercises/02_shape/007_transpose.rs",
-      "library_target": "src/operations/transpose.rs",
+    "sum": {
+      "implementation": "exercises/03_reductions/008_sum.rs",
+      "library_target": "src/reductions/sum.rs",
       "extends": null,
-      "source_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
-      "exercise": "007_transpose",
+      "source_learner_commit": "fa13c6ac7a6dd6200bbad81e3457ae7a6d63e228",
+      "exercise": "008_sum",
       "status": "unfinished"
     }
   },
@@ -81,9 +91,18 @@
     "005_eye also lacks the historical // TODO marker. All three missing markers remain learner-owned edits. The author changed no learner source or earlier runner.",
     "reshape passes its 13 original contract tests. The learner also added rumpy::reshape in src/operations/reshape.rs, but the original runner still tests its local function. Graduation awaits the learner's regression connection.",
     "The author checker tests the public reshape against an unchanged copy of the original assertions and saved NumPy cases in a disposable project. The learner's operations module, source, imports, and prior runners remain untouched.",
-    "007_transpose swaps exactly two axes into independent row-major storage. Its reference preserves every f64 bit, handles empty axes promptly, and rejects other ranks. NumPy cases and Rust-only extreme/invalid inputs have separate checks."
+    "007_transpose swaps exactly two axes into independent row-major storage. Its reference preserves every f64 bit, handles empty axes promptly, and rejects other ranks. NumPy cases and Rust-only extreme/invalid inputs have separate checks.",
+    "transpose is learner-graduated through rumpy::operations::transpose. All 14 preserved contract tests and 174 saved NumPy cases pass. The grouped public import is the only contract-test difference from the original.",
+    "007_transpose lacks the historical // TODO marker, like 003_full, 004_arange, and 005_eye. These runner edits remain learner-owned. No learner source or earlier runner changed in this publication.",
+    "Optional transpose cleanup: a.size() already defines the storage length, and data.to_vec() copies an already owned result buffer. Neither is a correctness defect.",
+    "008_sum starts at positive zero and adds flat f64 values left-to-right. NumPy may use pairwise summation, so exact oracle comparisons use inputs where both orders agree. Special-value classes and order-sensitive Rust tests remain explicit."
   ],
   "author_check_baseline": {
-    "missing_todo": ["003_full", "004_arange", "005_eye"]
+    "missing_todo": [
+      "003_full",
+      "004_arange",
+      "005_eye",
+      "007_transpose"
+    ]
   }
 }
