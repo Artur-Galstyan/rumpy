@@ -1,22 +1,12 @@
 // Exercise 008: sum every element of an owned contiguous f64 array.
 // Read lessons/008-sum.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Start at positive zero and add flat values left-to-right in f64.
-/// Accept every rank, including scalars and empty arrays. Leave input unchanged.
-/// Compare NaN results by class only. NumPy may use a different addition order.
-pub fn sum(a: &Array) -> f64 {
-    // TODO: Reduce the flat data in the specified order without changing a.
-    let _ = a;
-    todo!("sum")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::sum;
-    use rumpy::Array;
+
+    use rumpy::{Array, operations::sum};
 
     fn array(values: &[f64], shape: &[usize]) -> Array {
         Array::from_vec(values.to_vec(), shape.to_vec()).unwrap()
