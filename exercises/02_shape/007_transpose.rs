@@ -1,23 +1,11 @@
 // Exercise 007: numpy.transpose, two axes and an owned row-major copy.
 // Read lessons/007-transpose.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Swap the two axes and return independently owned, row-major data.
-/// Preserve every f64 bit and leave the input unchanged.
-/// Panic with "transpose requires a two-axis array" for any other rank.
-/// Empty axes, including usize::MAX paired with zero, must finish promptly.
-pub fn transpose(a: &Array) -> Array {
-    // TODO: Transpose a two-axis array without arithmetic on its values.
-    let _ = a;
-    todo!("transpose")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::transpose;
-    use rumpy::Array;
+    use rumpy::{Array, operations::transpose};
 
     fn array(data: &[f64], shape: &[usize]) -> Array {
         Array::from_vec(data.to_vec(), shape.to_vec()).unwrap()
