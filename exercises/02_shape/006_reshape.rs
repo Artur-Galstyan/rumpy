@@ -1,21 +1,11 @@
 // Exercise 006: numpy.reshape, explicit shapes and row-major order.
 // Read lessons/006-reshape.md. Keep the tests intact.
-use rumpy::{Array, ShapeError};
-
-/// Copy an array into a new explicit shape without changing its flat value order.
-/// Return the scaffold's ShapeError when the requested shape is incompatible.
-/// The input remains unchanged. The output owns independent data and shape.
-pub fn reshape(a: &Array, shape: &[usize]) -> Result<Array, ShapeError> {
-    // TODO: Preserve the flat values and validate the requested shape.
-    Array::from_vec(a.as_slice().to_vec(), shape.to_vec())
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::reshape;
-    use rumpy::{Array, ShapeError};
+    use rumpy::{Array, ShapeError, reshape};
 
     fn array(data: &[f64], shape: &[usize]) -> Array {
         Array::from_vec(data.to_vec(), shape.to_vec()).unwrap()

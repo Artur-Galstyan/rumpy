@@ -5,6 +5,7 @@ use std::fmt;
 pub struct Array {
     data: Vec<f64>,
     shape: Vec<usize>,
+    strides: Vec<usize>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -29,8 +30,6 @@ impl fmt::Display for ShapeError {
 impl std::error::Error for ShapeError {}
 
 impl Array {
-    /// Build from flat data and an explicit shape. Does not broadcast or reshape data.
-    /// Empty shape describes a scalar; any zero-length axis describes an empty array.
     pub fn from_vec(data: Vec<f64>, shape: Vec<usize>) -> Result<Self, ShapeError> {
         let expected = if shape.contains(&0) {
             0
@@ -46,7 +45,22 @@ impl Array {
                 actual: data.len(),
             });
         }
-        Ok(Self { data, shape })
+        let mut strides: Vec<usize> = shape
+            .iter()
+            .rev()
+            .scan(1, |acc, &d| {
+                let result = *acc;
+                *acc *= d;
+                Some(result)
+            })
+            .collect();
+        strides.reverse();
+
+        Ok(Self {
+            data,
+            shape,
+            strides,
+        })
     }
     pub fn shape(&self) -> &[usize] {
         &self.shape
@@ -56,6 +70,9 @@ impl Array {
     }
     pub fn size(&self) -> usize {
         self.data.len()
+    }
+    pub fn strides(&self) -> &[usize] {
+        &self.strides
     }
     pub fn as_slice(&self) -> &[f64] {
         &self.data
