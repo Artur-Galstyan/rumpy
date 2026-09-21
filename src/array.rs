@@ -5,7 +5,6 @@ use std::fmt;
 pub struct Array {
     data: Vec<f64>,
     shape: Vec<usize>,
-    strides: Vec<usize>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -45,22 +44,8 @@ impl Array {
                 actual: data.len(),
             });
         }
-        let mut strides: Vec<usize> = shape
-            .iter()
-            .rev()
-            .scan(1, |acc, &d| {
-                let result = *acc;
-                *acc *= d;
-                Some(result)
-            })
-            .collect();
-        strides.reverse();
 
-        Ok(Self {
-            data,
-            shape,
-            strides,
-        })
+        Ok(Self { data, shape })
     }
     pub fn shape(&self) -> &[usize] {
         &self.shape
@@ -70,9 +55,6 @@ impl Array {
     }
     pub fn size(&self) -> usize {
         self.data.len()
-    }
-    pub fn strides(&self) -> &[usize] {
-        &self.strides
     }
     pub fn as_slice(&self) -> &[f64] {
         &self.data
