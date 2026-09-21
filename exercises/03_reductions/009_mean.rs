@@ -6,18 +6,9 @@ use rumpy::Array;
 /// Return NaN for empty arrays. Accept every rank and leave input unchanged.
 /// Compare NaN results by class only. You may reuse rumpy::operations::sum.
 pub fn mean(a: &Array) -> f64 {
-    // TODO (historical, completed): Reduce all stored values, then divide.
-    // Empty input has no mean. No shape product or axis traversal is needed.
-    if a.size() == 0 {
-        return f64::NAN;
-    }
-    // Keep this reference self-contained; the learner may reuse the public sum API.
-    let mut total = 0.0_f64;
-    for &value in a.as_slice() {
-        total += value;
-    }
-    // Divide only after the complete ordered sum, not per element.
-    total / a.size() as f64
+    // TODO: Compute the mean in the specified order without changing a.
+    let _ = a;
+    todo!("mean")
 }
 
 fn main() {}

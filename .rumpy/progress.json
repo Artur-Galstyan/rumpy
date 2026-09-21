@@ -1,7 +1,7 @@
 {
   "current_exercise": "009_mean",
   "sequence": 9,
-  "last_handled_learner_commit": "ff2cf661835fb53384ab2e820045cd116c6cadef",
+  "last_handled_learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d",
   "next_candidate": "amax: reduce all elements with explicit empty-array and NaN semantics",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
@@ -56,36 +56,32 @@
       "source_learner_commit": "5d42a7005aa330d505c09204bd030f8738867bff",
       "regression_test_import": "use rumpy::{Array, operations::transpose};",
       "reference_test_import": "use super::transpose;\n    use rumpy::Array;"
+    },
+    "reshape": {
+      "exercise": "006_reshape",
+      "regression_runner": "exercises/02_shape/006_reshape.rs",
+      "public_api": "rumpy::reshape",
+      "regression_test_import": "use rumpy::{Array, ShapeError, reshape};",
+      "reference_test_import": "use super::reshape;\n    use rumpy::{Array, ShapeError};",
+      "implementation": "src/operations/reshape.rs",
+      "learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d"
+    },
+    "sum": {
+      "exercise": "008_sum",
+      "implementation": "src/operations/sum.rs",
+      "public_api": "rumpy::operations::sum",
+      "learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d",
+      "regression_runner": "exercises/03_reductions/008_sum.rs",
+      "regression_test_import": "\n\n    use rumpy::{Array, operations::sum};",
+      "reference_test_import": "\n    use super::sum;\n    use rumpy::Array;"
     }
   },
   "active": {
-    "reshape": {
-      "implementation": "exercises/02_shape/006_reshape.rs",
-      "library_target": "src/shape/reshape.rs",
-      "extends": null,
-      "source_learner_commit": "dc4a6584102d3a8b4468badf6e9affde8bf74ef1",
-      "exercise": "006_reshape",
-      "status": "connected_regression_failure",
-      "public_api": "rumpy::reshape",
-      "library_implementation": "src/operations/reshape.rs",
-      "reviewed_learner_commit": "ff2cf661835fb53384ab2e820045cd116c6cadef",
-      "regression_runner": "exercises/02_shape/006_reshape.rs",
-      "regression_test_import": "use rumpy::{Array, ShapeError, reshape};",
-      "reference_test_import": "use super::reshape;\n    use rumpy::{Array, ShapeError};"
-    },
-    "sum": {
-      "implementation": "exercises/03_reductions/008_sum.rs",
-      "library_target": "src/reductions/sum.rs",
-      "extends": null,
-      "source_learner_commit": "fa13c6ac7a6dd6200bbad81e3457ae7a6d63e228",
-      "exercise": "008_sum",
-      "status": "unfinished"
-    },
     "mean": {
       "implementation": "exercises/03_reductions/009_mean.rs",
       "library_target": "src/reductions/mean.rs",
       "extends": null,
-      "source_learner_commit": "ff2cf661835fb53384ab2e820045cd116c6cadef",
+      "source_learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d",
       "exercise": "009_mean",
       "status": "unfinished"
     }
@@ -110,7 +106,11 @@
     "ff2cf66 connects all preserved reshape assertions to rumpy::reshape. Graduation remains pending because the new Array stride scan overflows at [0, usize::MAX, 2]. Twelve tests pass and zero_axis_takes_precedence_over_overflow fails. The unchanged reference has the same container dependency failure.",
     "The new strides are element strides, not NumPy byte strides. Nonempty contiguous strides follow reverse products. Empty shapes need an explicit safe stride convention before unchecked products can overflow. No learner source or earlier runner was changed.",
     "006_reshape now also lacks the historical // TODO marker. The checker reports exact known failures and missing markers separately rather than silently fixing code or weakening assertions.",
-    "008_sum remains unfinished. New 009_mean is independent of it: add left-to-right from positive zero, then divide by count as f64; empty returns NaN. No API was added to src/."
+    "008_sum remains unfinished. New 009_mean is independent of it: add left-to-right from positive zero, then divide by count as f64; empty returns NaN. No API was added to src/.",
+    "f7f655c: sum is connected to rumpy::operations::sum and passes all 11 preserved contract tests. The shape-zero guard is optional because an empty data loop retains positive zero.",
+    "829210c removes strides and resolves the reshape constructor regression; all 13 preserved public-API reshape tests pass.",
+    "At the learner request, restore 009_mean rather than publish a different operation. Remove only checks for the deleted strides API from the mean exercise, matching reference, and oracle harness. Preserve every numerical, shape, and data-bit assertion. Public sum reuse is allowed. No src/ or earlier runner changes.",
+    "008_sum also lacks the historical // TODO marker required by Rustlings author checks."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -118,11 +118,9 @@
       "004_arange",
       "005_eye",
       "007_transpose",
-      "006_reshape"
+      "006_reshape",
+      "008_sum"
     ],
-    "test_failures": {
-      "006_reshape": "tests::zero_axis_takes_precedence_over_overflow",
-      "006_reshape_sol": "tests::zero_axis_takes_precedence_over_overflow"
-    }
+    "test_failures": {}
   }
 }

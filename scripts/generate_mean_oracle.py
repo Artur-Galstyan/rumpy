@@ -123,10 +123,9 @@ def verify_rust(fixture):
             blocks.append("{" + f"let a = rumpy::Array::from_vec(vec![{bits}], vec![{shape}]).unwrap();"
                           "let before = a.as_slice().iter().map(|v| v.to_bits()).collect::<Vec<_>>();"
                           "let shape_before = a.shape().to_vec();"
-                          "let strides_before = a.strides().to_vec();"
                           "let actual = reference::mean(&a);" + check +
                           "assert_eq!(a.as_slice().iter().map(|v| v.to_bits()).collect::<Vec<_>>(), before);"
-                          "assert_eq!(a.shape(), shape_before); assert_eq!(a.strides(), strides_before);}")
+                          "assert_eq!(a.shape(), shape_before);}")
         text = f'#[allow(dead_code)] #[path = {json.dumps(str(solution))}] mod reference;\n'
         for start in range(0, len(blocks), 32):
             text += f"fn batch_{start}() {{" + "\n".join(blocks[start:start + 32]) + "}\n"

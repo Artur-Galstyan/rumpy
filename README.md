@@ -20,22 +20,16 @@ Do **not** run `rustlings init` here. That creates the official Rust course.
 `exercises/03_reductions/009_mean.rs`. Reduce every stored value to one `f64` mean.
 Add left-to-right from positive zero, then divide by the stored count as `f64`.
 An empty array returns NaN. NumPy can use a different addition order.
-`008_sum` remains unfinished. Mean does not depend on a public sum API.
-
-Your reshape runner now tests `rumpy::reshape` with all original assertions.
-However, the new stride scan in `Array::from_vec` overflows for `[0, usize::MAX, 2]`.
-Twelve reshape tests pass and `zero_axis_takes_precedence_over_overflow` fails.
-Graduation remains pending until this regression passes. The reference hits the same constructor failure.
-Choose an explicit safe convention for empty-array strides before unchecked products overflow.
-Your strides count elements. NumPy reports bytes, so nonempty comparisons need that unit conversion.
-Your transpose still passes its 14 preserved tests and 174 saved NumPy cases.
+Your public `rumpy::operations::sum` passes all 11 preserved contract tests.
+You may reuse it for mean. The restored mean exercise uses the current Array API without strides.
+Your stride rollback resolves the reshape regression. All 13 public-API reshape tests pass.
 The author changed no learner source, exports, callers, or earlier runners.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, and `007_transpose` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, and `008_sum` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -53,6 +47,9 @@ Add the corresponding comment to each file without a test change:
 
 // In exercises/02_shape/007_transpose.rs:
 // TODO (historical, completed): implementation moved to rumpy::operations::transpose.
+
+// In exercises/03_reductions/008_sum.rs:
+// TODO (historical, completed): implementation moved to rumpy::operations::sum.
 ```
 
 ```sh
@@ -72,11 +69,11 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ```text
 exercises/03_reductions/009_mean.rs active task: edit this
 solutions/03_reductions/009_mean.rs reference: compare after your attempt
-exercises/03_reductions/008_sum.rs  earlier unfinished task
+exercises/03_reductions/008_sum.rs  original tests against rumpy::operations::sum
 src/operations/transpose.rs        your completed implementation
 exercises/02_shape/007_transpose.rs original tests against rumpy::operations::transpose
 src/operations/reshape.rs          your public implementation
-exercises/02_shape/006_reshape.rs   public-API runner: stride regression still fails
+exercises/02_shape/006_reshape.rs   public-API runner: all preserved tests pass
 src/creation/eye.rs                your completed implementation
 exercises/01_creation/005_eye.rs    original tests against rumpy::eye
 src/creation/arange.rs             your completed implementation
@@ -162,7 +159,7 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, and `007_transpose` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, and `008_sum` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
