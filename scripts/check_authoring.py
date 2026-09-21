@@ -3,7 +3,7 @@
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
-transpose(array) -> Array, and sum(array) -> f64. Solved active tasks and their public copies stay
+transpose(array) -> Array, and sum/mean(array) -> f64. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -11,6 +11,7 @@ regression tests and references still run, without edits to learner source.
 """
 from pathlib import Path
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -19,12 +20,24 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(args, cwd, *, unfinished=False):
+def run(args, cwd, *, unfinished=False, known_failure=None):
     result = subprocess.run(
         args, cwd=cwd, text=True, capture_output=True, timeout=180
     )
     output = result.stdout + result.stderr
-    if unfinished:
+    if known_failure:
+        failed = set(re.findall(r"^test (\S+) \.\.\. FAILED$", output, re.MULTILINE))
+        valid = (result.returncode != 0 and failed == {known_failure}
+                 and "12 passed; 1 failed" in output
+                 and "attempt to multiply with overflow" in output
+                 and "src/array.rs:" in output and "could not compile" not in output)
+        if result.returncode == 0:
+            print(f"BASELINE RESOLVED: {args}; update progress metadata")
+            return output
+        if valid:
+            print(f"BASELINE ERROR: {args}: {known_failure}: stride overflow; remaining 12 tests pass")
+            return output
+    elif unfinished:
         valid = (
             result.returncode != 0
             and "not yet implemented" in output
@@ -49,6 +62,12 @@ def main():
         name: record for name, record in progress.get("active", {}).items()
         if record.get("status") == "solved_pending_regression_connection"
     }
+    connected_active = {
+        name: record for name, record in progress.get("active", {}).items()
+        if record.get("status") == "connected_regression_failure"
+    }
+    public_records = graduated | connected_active
+    baseline_failures = progress.get("author_check_baseline", {}).get("test_failures", {})
     graduated_exercises = {item["exercise"] for item in graduated.values()}
     if current in graduated_exercises:
         raise ValueError("The current publication needs an unfinished task")
@@ -65,6 +84,10 @@ def main():
         run(["cargo", "test", "--lib", "--test", "scaffold"], work)
         for name in sorted(graduated_exercises):
             run(["cargo", "test", "--bin", name], work)
+        for record in connected_active.values():
+            name = record["exercise"]
+            run(["cargo", "test", "--bin", name], work,
+                known_failure=baseline_failures.get(name))
         for operation, record in solved_active.items():
             name = record["exercise"]
             run(["cargo", "test", "--bin", name], work)
@@ -92,7 +115,7 @@ def main():
             exercise_tests = exercise.split(marker, 1)[1].strip()
             reference_tests = reference.split(marker, 1)[1].strip()
             # Graduation can change only this test import, not the assertions.
-            for operation, record in graduated.items():
+            for operation, record in public_records.items():
                 if record["exercise"] == name:
                     if "regression_test_import" in record:
                         original = record["regression_test_import"]
@@ -108,11 +131,13 @@ def main():
                 raise ValueError(f"Reference and exercise tests differ for {name}")
             run(["rustfmt", "--edition", "2024", "--check",
                  str(work / "solutions" / relative)], work)
-            run(["cargo", "test", "--bin", f"{name}_sol"], work)
+            run(["cargo", "test", "--bin", f"{name}_sol"], work,
+                known_failure=baseline_failures.get(f"{name}_sol"))
 
         declared_missing = set(progress.get("author_check_baseline", {}).get("missing_todo", []))
-        if not declared_missing <= graduated_exercises:
-            raise ValueError("Only graduated runners may have a historical-marker baseline")
+        connected_exercises = {record["exercise"] for record in public_records.values()}
+        if not declared_missing <= connected_exercises:
+            raise ValueError("Only connected public-API runners may have a historical-marker baseline")
         missing = set()
         for name in declared_missing:
             item = exercises[name]
@@ -156,10 +181,18 @@ def main():
 
         # Install references only in this disposable copy, never into src/.
         for name, item in exercises.items():
-            if name not in graduated_exercises:
+            if name not in connected_exercises:
                 relative = Path(item.get("dir") or "") / f"{name}.rs"
                 shutil.copyfile(work / "solutions" / relative, work / "exercises" / relative)
-        run(["cargo", "test", "--all-targets"], work)
+        # Run every bin separately so the known learner regression cannot hide later tests.
+        run(["cargo", "test", "--lib", "--test", "scaffold"], work)
+        cargo = tomllib.loads((work / "Cargo.toml").read_text())
+        for item in cargo["bin"]:
+            name = item["name"]
+            run(["cargo", "test", "--bin", name], work,
+                known_failure=baseline_failures.get(name))
+        if (work / "src/main.rs").exists():
+            run(["cargo", "test", "--bin", cargo["package"]["name"]], work)
 
         # Compare completed library functions and active references to real oracle data.
         declarations = []
@@ -169,8 +202,8 @@ def main():
         for fixture_path in sorted((work / "validation").glob("*-numpy.json")):
             name = fixture_path.name.removesuffix("-numpy.json")
             fixture = json.loads(fixture_path.read_text())
-            if name in graduated:
-                callable_name = graduated[name]["public_api"]
+            if name in public_records:
+                callable_name = public_records[name]["public_api"]
             elif name in solved_active:
                 callable_name = solved_active[name]["public_api"]
             else:
@@ -189,7 +222,7 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name == "sum":
+                if name in {"sum", "mean"}:
                     # Scalar reductions have no output Array shape or buffer.
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
                     expected = (

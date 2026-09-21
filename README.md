@@ -16,24 +16,27 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [008 — sum](lessons/008-sum.md) and edit
-`exercises/03_reductions/008_sum.rs`. Reduce all flat values to one `f64`.
-Start at positive zero and add left-to-right. NumPy can use a different addition order.
-Your transpose is now learner-graduated through `rumpy::operations::transpose`.
-Its 14 preserved contract tests and 174 NumPy cases pass.
-Optional cleanup: the shape product repeats the size check, and `data.to_vec()` makes an unnecessary copy.
-The author left your implementation unchanged.
-Your `reshape` passes all 13 original tests. Your public copy lives in `src/operations/reshape.rs`.
-The old runner still tests its local copy, so graduation remains pending.
-Connect its preserved tests to `rumpy::reshape` when ready. Keep a historical `// TODO` marker.
+**Current task:** read [009 — mean](lessons/009-mean.md) and edit
+`exercises/03_reductions/009_mean.rs`. Reduce every stored value to one `f64` mean.
+Add left-to-right from positive zero, then divide by the stored count as `f64`.
+An empty array returns NaN. NumPy can use a different addition order.
+`008_sum` remains unfinished. Mean does not depend on a public sum API.
+
+Your reshape runner now tests `rumpy::reshape` with all original assertions.
+However, the new stride scan in `Array::from_vec` overflows for `[0, usize::MAX, 2]`.
+Twelve reshape tests pass and `zero_axis_takes_precedence_over_overflow` fails.
+Graduation remains pending until this regression passes. The reference hits the same constructor failure.
+Choose an explicit safe convention for empty-array strides before unchecked products overflow.
+Your strides count elements. NumPy reports bytes, so nonempty comparisons need that unit conversion.
+Your transpose still passes its 14 preserved tests and 174 saved NumPy cases.
 The author changed no learner source, exports, callers, or earlier runners.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The `003_full`, `004_arange`, `005_eye`, and `007_transpose` tests pass through your public API. Their runners lack Rustlings' required
-historical markers. Add the corresponding comment to each file without a test change:
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, and `007_transpose` lack Rustlings' required historical markers.
+Add the corresponding comment to each file without a test change:
 
 ```rust
 // In exercises/01_creation/003_full.rs:
@@ -45,15 +48,18 @@ historical markers. Add the corresponding comment to each file without a test ch
 // In exercises/01_creation/005_eye.rs:
 // TODO (historical, completed): implementation moved to rumpy::eye.
 
+// In exercises/02_shape/006_reshape.rs:
+// TODO (historical, completed): implementation moved to rumpy::reshape.
+
 // In exercises/02_shape/007_transpose.rs:
 // TODO (historical, completed): implementation moved to rumpy::operations::transpose.
 ```
 
 ```sh
-rustlings hint 008_sum
-rustlings run 008_sum
+rustlings hint 009_mean
+rustlings run 009_mean
 # Headless checks:
-cargo test --bin 008_sum
+cargo test --bin 009_mean
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -64,12 +70,13 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/03_reductions/008_sum.rs  active task: edit this
-solutions/03_reductions/008_sum.rs  reference: compare after your attempt
+exercises/03_reductions/009_mean.rs active task: edit this
+solutions/03_reductions/009_mean.rs reference: compare after your attempt
+exercises/03_reductions/008_sum.rs  earlier unfinished task
 src/operations/transpose.rs        your completed implementation
 exercises/02_shape/007_transpose.rs original tests against rumpy::operations::transpose
 src/operations/reshape.rs          your public implementation
-exercises/02_shape/006_reshape.rs   solved local copy: connect tests to public API
+exercises/02_shape/006_reshape.rs   public-API runner: stride regression still fails
 src/creation/eye.rs                your completed implementation
 exercises/01_creation/005_eye.rs    original tests against rumpy::eye
 src/creation/arange.rs             your completed implementation
@@ -120,7 +127,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement sum"
+git commit -m "Implement mean"
 git push origin main
 ```
 
@@ -142,7 +149,7 @@ discard your work. This job remains separate from paper spaced repetition.
 - [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
 - `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
 - `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye` checks the completed library and scaffold.
-- `cargo test --bin 006_reshape` checks the solved local reshape. The author checker also tests its public API in a disposable copy.
+- `cargo test --bin 006_reshape` checks the public reshape. Its empty-shape stride regression currently fails.
 - `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
 - `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 
@@ -155,15 +162,18 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, and `007_transpose` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, and `007_transpose` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
-The checker tests `rumpy::reshape` against all original assertions without changing the real runner.
-It compares that public API with saved NumPy fixtures, but this does not count as learner-owned graduation.
-The transpose fixture contains 174 real NumPy 2.4.3 cases. Its 14 contract tests also cover unsupported ranks and huge empty axes.
-The new sum stub deliberately fails at `todo!`. Its matching reference passes all 11 identical contract tests.
-The sum fixture contains 100 real NumPy 2.4.3 cases where NumPy agrees with the explicit sequential order.
-Order-sensitive inputs have separate Rust tests. The checker normalizes only the documented grouped import in the transpose runner.
-All original assertions remain unchanged.
+The checker runs all original reshape assertions against the public API and the reference.
+It reports the exact known stride overflow separately and rejects any additional failure.
+No temporary library substitute or weaker assertion is necessary for the new task.
+The unchanged public reshape still passes the saved NumPy cases. Those small cases do not disprove the huge-empty-shape regression.
+The transpose fixture contains 174 real NumPy 2.4.3 cases. Its 14 contract tests cover unsupported ranks and huge empty axes.
+The mean stub deliberately fails at `todo!`. Its matching reference passes all 13 identical contract tests.
+The mean fixture contains 100 real NumPy 2.4.3 cases where NumPy agrees with the explicit sequential order.
+The earlier sum reference passes its 11 tests and 100 saved NumPy cases. Its learner stub remains unfinished.
+Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
+All original assertions remain unchanged. See [the publication review](validation/009-authoring.md) for the checks and baseline failures.
