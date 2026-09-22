@@ -1,22 +1,11 @@
 // Exercise 009: mean of every element of an owned contiguous f64 array.
 // Read lessons/009-mean.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Add flat values left-to-right from positive zero, then divide by count as f64.
-/// Return NaN for empty arrays. Accept every rank and leave input unchanged.
-/// Compare NaN results by class only. You may reuse rumpy::operations::sum.
-pub fn mean(a: &Array) -> f64 {
-    // TODO: Compute the mean in the specified order without changing a.
-    let _ = a;
-    todo!("mean")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::mean;
-    use rumpy::Array;
+    use rumpy::{Array, mean};
 
     fn array(values: &[f64], shape: &[usize]) -> Array {
         Array::from_vec(values.to_vec(), shape.to_vec()).unwrap()
