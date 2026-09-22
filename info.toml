@@ -1,9 +1,9 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your public sum and reshape pass their preserved regression tests.
-Read lessons/009-mean.md, then edit exercises/03_reductions/009_mean.rs. Press h for hints.
-009_mean is restored for the current Array API. You may reuse rumpy::operations::sum.
+Your public mean passes its preserved regression tests.
+Read lessons/010-amax.md, then edit exercises/03_reductions/010_amax.rs. Press h for hints.
+Select the maximum, propagate NaNs, and keep the first equal value.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -254,6 +254,7 @@ The reference is solutions/03_reductions/008_sum.rs; compare after your attempt.
 [[exercises]]
 name = "009_mean"
 dir = "03_reductions"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -276,4 +277,31 @@ Hint 4 - Rust tools:
 Use size for the count, as f64 for conversion, and f64::NAN for empty input.
 Keep the input shape and data bits unchanged. No allocation is needed.
 The reference is solutions/03_reductions/009_mean.rs; compare after your attempt.
+"""
+
+
+[[exercises]]
+name = "010_amax"
+dir = "03_reductions"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Empty versus scalar:
+Read lessons/010-amax.md. The stored slice defines whether a maximum exists.
+Shape [] contains one scalar. A zero-length axis contains no values.
+
+Hint 2 - Initial value:
+Zero cannot be the initial maximum for an all-negative input.
+Consider a slice method that separates its first value from the rest.
+
+Hint 3 - Equal values:
+Compare strict and non-strict comparisons. Which retains the first equal value?
+Positive and negative zero compare equal but have different bits.
+
+Hint 4 - NaN policy:
+A comparison alone cannot detect NaN. Any NaN must produce NaN, even after infinity.
+f64::max ignores a single NaN, so it does not express this contract directly.
+The reference is solutions/03_reductions/010_amax.rs; compare after your attempt.
 """

@@ -18,6 +18,8 @@ bin = [
   { name = "008_sum_sol", path = "solutions/03_reductions/008_sum.rs" },
   { name = "009_mean", path = "exercises/03_reductions/009_mean.rs" },
   { name = "009_mean_sol", path = "solutions/03_reductions/009_mean.rs" },
+  { name = "010_amax", path = "exercises/03_reductions/010_amax.rs" },
+  { name = "010_amax_sol", path = "solutions/03_reductions/010_amax.rs" },
 ]
 
 [package]

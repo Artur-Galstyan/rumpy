@@ -1,8 +1,8 @@
 {
-  "current_exercise": "009_mean",
-  "sequence": 9,
-  "last_handled_learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d",
-  "next_candidate": "amax: reduce all elements with explicit empty-array and NaN semantics",
+  "current_exercise": "010_amax",
+  "sequence": 10,
+  "last_handled_learner_commit": "f5ce2d5ce1684c635a6d30138073b1cc9b6e1ec6",
+  "next_candidate": "argmax: flat first-maximum index with explicit empty-array and NaN semantics",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -74,15 +74,24 @@
       "regression_runner": "exercises/03_reductions/008_sum.rs",
       "regression_test_import": "\n\n    use rumpy::{Array, operations::sum};",
       "reference_test_import": "\n    use super::sum;\n    use rumpy::Array;"
+    },
+    "mean": {
+      "exercise": "009_mean",
+      "implementation": "src/operations/mean.rs",
+      "public_api": "rumpy::mean",
+      "learner_commit": "f5ce2d5ce1684c635a6d30138073b1cc9b6e1ec6",
+      "regression_runner": "exercises/03_reductions/009_mean.rs",
+      "regression_test_import": "use rumpy::{Array, mean};",
+      "reference_test_import": "use super::mean;\n    use rumpy::Array;"
     }
   },
   "active": {
-    "mean": {
-      "implementation": "exercises/03_reductions/009_mean.rs",
-      "library_target": "src/reductions/mean.rs",
+    "amax": {
+      "exercise": "010_amax",
+      "implementation": "exercises/03_reductions/010_amax.rs",
+      "library_target": "src/operations/amax.rs",
       "extends": null,
-      "source_learner_commit": "f7f655c6f2bb5e640098304c1efd83abbcd9c91d",
-      "exercise": "009_mean",
+      "source_learner_commit": "f5ce2d5ce1684c635a6d30138073b1cc9b6e1ec6",
       "status": "unfinished"
     }
   },
@@ -110,7 +119,10 @@
     "f7f655c: sum is connected to rumpy::operations::sum and passes all 11 preserved contract tests. The shape-zero guard is optional because an empty data loop retains positive zero.",
     "829210c removes strides and resolves the reshape constructor regression; all 13 preserved public-API reshape tests pass.",
     "At the learner request, restore 009_mean rather than publish a different operation. Remove only checks for the deleted strides API from the mean exercise, matching reference, and oracle harness. Preserve every numerical, shape, and data-bit assertion. Public sum reuse is allowed. No src/ or earlier runner changes.",
-    "008_sum also lacks the historical // TODO marker required by Rustlings author checks."
+    "008_sum also lacks the historical // TODO marker required by Rustlings author checks.",
+    "f5ce2d5: mean is learner-graduated at rumpy::mean. The public implementation reuses sum, checks empty storage, then divides by the stored count. All 13 preserved contract tests pass; the grouped import is the only test difference. Root exports also expose sum and transpose without changing their implementations.",
+    "009_mean also lacks the historical // TODO marker required by Rustlings. The author leaves that runner and every learner implementation unchanged.",
+    "010_amax selects the maximum across all ranks, propagates any NaN by class, retains the first equal value including signed-zero ties, and rejects empty input with an exact panic. NumPy mixed-zero tie bits are not part of the oracle claim."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -119,7 +131,8 @@
       "005_eye",
       "007_transpose",
       "006_reshape",
-      "008_sum"
+      "008_sum",
+      "009_mean"
     ],
     "test_failures": {}
   }

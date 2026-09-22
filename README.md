@@ -16,20 +16,20 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [009 — mean](lessons/009-mean.md) and edit
-`exercises/03_reductions/009_mean.rs`. Reduce every stored value to one `f64` mean.
-Add left-to-right from positive zero, then divide by the stored count as `f64`.
-An empty array returns NaN. NumPy can use a different addition order.
-Your public `rumpy::operations::sum` passes all 11 preserved contract tests.
-You may reuse it for mean. The restored mean exercise uses the current Array API without strides.
-Your stride rollback resolves the reshape regression. All 13 public-API reshape tests pass.
+**Current task:** read [010 — amax](lessons/010-amax.md) and edit
+`exercises/03_reductions/010_amax.rs`. Select the maximum across all stored values.
+Any NaN produces NaN. Empty input panics with the exact documented message.
+Equal maxima retain the first stored value, including signed-zero ties.
+This tie rule is explicit Rust behavior, not a claim about NumPy mixed-zero bits.
+Your public `rumpy::mean` passes all 13 preserved contract tests and now counts as graduated.
+It reuses your ordered `sum` and divides by the stored count after the sum.
 The author changed no learner source, exports, callers, or earlier runners.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, and `008_sum` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, and `009_mean` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -50,13 +50,16 @@ Add the corresponding comment to each file without a test change:
 
 // In exercises/03_reductions/008_sum.rs:
 // TODO (historical, completed): implementation moved to rumpy::operations::sum.
+
+// In exercises/03_reductions/009_mean.rs:
+// TODO (historical, completed): implementation moved to rumpy::mean.
 ```
 
 ```sh
-rustlings hint 009_mean
-rustlings run 009_mean
+rustlings hint 010_amax
+rustlings run 010_amax
 # Headless checks:
-cargo test --bin 009_mean
+cargo test --bin 010_amax
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -67,8 +70,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/03_reductions/009_mean.rs active task: edit this
-solutions/03_reductions/009_mean.rs reference: compare after your attempt
+exercises/03_reductions/010_amax.rs active task: edit this
+solutions/03_reductions/010_amax.rs reference: compare after your attempt
+src/operations/mean.rs            your completed implementation
+exercises/03_reductions/009_mean.rs original tests against rumpy::mean
 exercises/03_reductions/008_sum.rs  original tests against rumpy::operations::sum
 src/operations/transpose.rs        your completed implementation
 exercises/02_shape/007_transpose.rs original tests against rumpy::operations::transpose
@@ -124,7 +129,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement mean"
+git commit -m "Implement amax"
 git push origin main
 ```
 
@@ -146,7 +151,7 @@ discard your work. This job remains separate from paper spaced repetition.
 - [Roadmap](ROADMAP.md) and [author contract](AGENTS.md).
 - `.rumpy/progress.json` records active/graduated functions and the handled learner SHA.
 - `cargo test --lib --test scaffold --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye` checks the completed library and scaffold.
-- `cargo test --bin 006_reshape` checks the public reshape. Its empty-shape stride regression currently fails.
+- `cargo test --bin 006_reshape --bin 008_sum --bin 009_mean` checks the public reshape, sum, and mean. Their preserved tests pass.
 - `cargo check --all-targets`, `cargo fmt --check`, and Clippy check build quality.
 - `rustlings dev check --require-solutions` validates unfinished tasks and all references.
 
@@ -159,18 +164,16 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, and `008_sum` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, and `009_mean` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
-The checker runs all original reshape assertions against the public API and the reference.
-It reports the exact known stride overflow separately and rejects any additional failure.
-No temporary library substitute or weaker assertion is necessary for the new task.
-The unchanged public reshape still passes the saved NumPy cases. Those small cases do not disprove the huge-empty-shape regression.
-The transpose fixture contains 174 real NumPy 2.4.3 cases. Its 14 contract tests cover unsupported ranks and huge empty axes.
-The mean stub deliberately fails at `todo!`. Its matching reference passes all 13 identical contract tests.
-The mean fixture contains 100 real NumPy 2.4.3 cases where NumPy agrees with the explicit sequential order.
-The earlier sum reference passes its 11 tests and 100 saved NumPy cases. Its learner stub remains unfinished.
+The checker runs all original assertions against the graduated public APIs and the references.
+The previous reshape stride regression is resolved. No temporary library substitute is necessary.
+The current amax stub deliberately fails at `todo!`. Its reference has 10 identical contract tests.
+The amax fixture contains 125 scalar cases and 5 empty cases from real NumPy 2.4.3.
+Mixed-zero tie bits and huge empty shapes have separate Rust tests.
+The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/009-authoring.md) for the checks and baseline failures.
+All original assertions remain unchanged. See [the publication review](validation/010-authoring.md) for the checks and baseline errors.

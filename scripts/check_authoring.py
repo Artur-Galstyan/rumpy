@@ -3,7 +3,7 @@
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
-transpose(array) -> Array, and sum/mean(array) -> f64. Solved active tasks and their public copies stay
+transpose(array) -> Array, and sum/mean/amax(array) -> f64. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -199,6 +199,7 @@ def main():
         checks = ["#[test]", "fn matches_saved_numpy_fixtures() {"]
         case_count = 0
         rejected_count = 0
+        empty_reduction_count = 0
         for fixture_path in sorted((work / "validation").glob("*-numpy.json")):
             name = fixture_path.name.removesuffix("-numpy.json")
             fixture = json.loads(fixture_path.read_text())
@@ -222,7 +223,7 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name in {"sum", "mean"}:
+                if name in {"sum", "mean", "amax"}:
                     # Scalar reductions have no output Array shape or buffer.
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
                     expected = (
@@ -284,6 +285,22 @@ def main():
                     "    }",
                 ])
                 case_count += 1
+            for case in fixture.get("empty_cases", []):
+                if name != "amax":
+                    raise ValueError(f"Unsupported empty reduction: {name}")
+                checks.extend([
+                    "    {",
+                    f"    let expected_shape: &[usize] = &{json.dumps(case['input_shape'])};",
+                    "    let input = rumpy::Array::from_vec(vec![], expected_shape.to_vec()).unwrap();",
+                    f"    let panic = std::panic::catch_unwind(|| {callable_name}(&input)).unwrap_err();",
+                    "    let message = panic.downcast_ref::<String>().map(String::as_str)",
+                    "        .or_else(|| panic.downcast_ref::<&str>().copied());",
+                    '    assert_eq!(message, Some("amax requires at least one element"));',
+                    "    assert_eq!(input.shape(), expected_shape);",
+                    "    assert!(input.as_slice().is_empty());",
+                    "    }",
+                ])
+                empty_reduction_count += 1
             for case in fixture.get("rejected", []):
                 if name != "reshape" or case["numpy_error"] != "ValueError":
                     raise ValueError(f"Unsupported rejected oracle case: {name}")
@@ -305,6 +322,7 @@ def main():
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
         print(f"PASS {case_count} saved NumPy cases, including array shapes, exact non-NaN bits, and reduction NaN classes")
         print(f"PASS {rejected_count} saved NumPy shape rejections with exact scaffold errors")
+        print(f"PASS {empty_reduction_count} saved NumPy empty reductions with exact Rust panic text")
     print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")
 
 
