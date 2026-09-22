@@ -3,7 +3,7 @@
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
-transpose(array) -> Array, and sum/mean/amax(array) -> f64. Solved active tasks and their public copies stay
+transpose(array) -> Array, sum/mean/amax(array) -> f64, and argmax(array) -> usize. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -223,19 +223,24 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name in {"sum", "mean", "amax"}:
+                if name in {"sum", "mean", "amax", "argmax"}:
                     # Scalar reductions have no output Array shape or buffer.
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
-                    expected = (
-                        "    assert!(actual.is_nan());" if case["expected_nan"] else
-                        f"    assert_eq!(actual.to_bits(), {case['expected_bits']}u64);"
-                    )
+                    if name == "argmax":
+                        expected = f"    assert_eq!(actual, {case['expected_index']}usize);"
+                    else:
+                        expected = (
+                            "    assert!(actual.is_nan());" if case["expected_nan"] else
+                            f"    assert_eq!(actual.to_bits(), {case['expected_bits']}u64);"
+                        )
                     checks.extend([
                         "    {",
                         f"    let input = rumpy::Array::from_vec(vec![{values}], vec!{json.dumps(case['input_shape'])}).unwrap();",
                         "    let before: Vec<u64> = input.as_slice().iter().map(|v| v.to_bits()).collect();",
                         f"    let actual = {callable_name}(&input);",
                         expected,
+                        f"    let expected_shape: &[usize] = &{json.dumps(case['input_shape'])};",
+                        "    assert_eq!(input.shape(), expected_shape);",
                         "    assert_eq!(input.as_slice().iter().map(|v| v.to_bits()).collect::<Vec<_>>(), before);",
                         "    }",
                     ])
@@ -286,7 +291,7 @@ def main():
                 ])
                 case_count += 1
             for case in fixture.get("empty_cases", []):
-                if name != "amax":
+                if name not in {"amax", "argmax"}:
                     raise ValueError(f"Unsupported empty reduction: {name}")
                 checks.extend([
                     "    {",
@@ -295,7 +300,7 @@ def main():
                     f"    let panic = std::panic::catch_unwind(|| {callable_name}(&input)).unwrap_err();",
                     "    let message = panic.downcast_ref::<String>().map(String::as_str)",
                     "        .or_else(|| panic.downcast_ref::<&str>().copied());",
-                    '    assert_eq!(message, Some("amax requires at least one element"));',
+                    f'    assert_eq!(message, Some("{name} requires at least one element"));',
                     "    assert_eq!(input.shape(), expected_shape);",
                     "    assert!(input.as_slice().is_empty());",
                     "    }",
@@ -320,7 +325,7 @@ def main():
             "\n".join(declarations + checks) + "\n"
         )
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
-        print(f"PASS {case_count} saved NumPy cases, including array shapes, exact non-NaN bits, and reduction NaN classes")
+        print(f"PASS {case_count} saved NumPy cases, including array shapes, exact non-NaN bits, reduction NaN classes, and argmax indices")
         print(f"PASS {rejected_count} saved NumPy shape rejections with exact scaffold errors")
         print(f"PASS {empty_reduction_count} saved NumPy empty reductions with exact Rust panic text")
     print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")

@@ -1,8 +1,8 @@
 {
-  "current_exercise": "010_amax",
-  "sequence": 10,
-  "last_handled_learner_commit": "f5ce2d5ce1684c635a6d30138073b1cc9b6e1ec6",
-  "next_candidate": "argmax: flat first-maximum index with explicit empty-array and NaN semantics",
+  "current_exercise": "011_argmax",
+  "sequence": 11,
+  "last_handled_learner_commit": "9fd675d5647b181fb0595fb62f66092c1aeed8f8",
+  "next_candidate": "add: same-shape elementwise addition before broadcasting",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -83,15 +83,24 @@
       "regression_runner": "exercises/03_reductions/009_mean.rs",
       "regression_test_import": "use rumpy::{Array, mean};",
       "reference_test_import": "use super::mean;\n    use rumpy::Array;"
+    },
+    "amax": {
+      "exercise": "010_amax",
+      "implementation": "src/operations/amax.rs",
+      "public_api": "rumpy::amax",
+      "learner_commit": "9fd675d5647b181fb0595fb62f66092c1aeed8f8",
+      "regression_runner": "exercises/03_reductions/010_amax.rs",
+      "regression_test_import": "use rumpy::{Array, amax};",
+      "reference_test_import": "use super::amax;\n    use rumpy::Array;"
     }
   },
   "active": {
-    "amax": {
-      "exercise": "010_amax",
-      "implementation": "exercises/03_reductions/010_amax.rs",
-      "library_target": "src/operations/amax.rs",
+    "argmax": {
+      "exercise": "011_argmax",
+      "implementation": "exercises/03_reductions/011_argmax.rs",
+      "library_target": "src/operations/argmax.rs",
       "extends": null,
-      "source_learner_commit": "f5ce2d5ce1684c635a6d30138073b1cc9b6e1ec6",
+      "source_learner_commit": "9fd675d5647b181fb0595fb62f66092c1aeed8f8",
       "status": "unfinished"
     }
   },
@@ -122,7 +131,11 @@
     "008_sum also lacks the historical // TODO marker required by Rustlings author checks.",
     "f5ce2d5: mean is learner-graduated at rumpy::mean. The public implementation reuses sum, checks empty storage, then divides by the stored count. All 13 preserved contract tests pass; the grouped import is the only test difference. Root exports also expose sum and transpose without changing their implementations.",
     "009_mean also lacks the historical // TODO marker required by Rustlings. The author leaves that runner and every learner implementation unchanged.",
-    "010_amax selects the maximum across all ranks, propagates any NaN by class, retains the first equal value including signed-zero ties, and rejects empty input with an exact panic. NumPy mixed-zero tie bits are not part of the oracle claim."
+    "010_amax selects the maximum across all ranks, propagates any NaN by class, retains the first equal value including signed-zero ties, and rejects empty input with an exact panic. NumPy mixed-zero tie bits are not part of the oracle claim.",
+    "9fd675d: amax is learner-graduated at rumpy::amax. All 10 preserved contract tests pass. Only the grouped public import differs from the reference test module. Independent debug/release review passed 125 saved NumPy cases, 5 empty cases, and 10 additional edge cases.",
+    "Negative infinity is a valid amax initial value within this f64 contract. Strict comparisons preserve the first equal maximum, and explicit NaN checks prevent infinity from hiding a later NaN. No numerical defect found.",
+    "010_amax also lacks the historical // TODO marker. All learner source, exports, callers, and earlier runners remain unchanged by this publication.",
+    "011_argmax returns a flat usize index across all ranks. First NaN wins if present; otherwise first maximum wins, including signed-zero ties. Empty input has an exact panic. Real NumPy fixtures contain 183 nonempty and 5 empty cases."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -132,7 +145,8 @@
       "007_transpose",
       "006_reshape",
       "008_sum",
-      "009_mean"
+      "009_mean",
+      "010_amax"
     ],
     "test_failures": {}
   }

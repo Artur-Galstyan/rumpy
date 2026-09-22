@@ -16,20 +16,19 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [010 — amax](lessons/010-amax.md) and edit
-`exercises/03_reductions/010_amax.rs`. Select the maximum across all stored values.
-Any NaN produces NaN. Empty input panics with the exact documented message.
-Equal maxima retain the first stored value, including signed-zero ties.
-This tie rule is explicit Rust behavior, not a claim about NumPy mixed-zero bits.
-Your public `rumpy::mean` passes all 13 preserved contract tests and now counts as graduated.
-It reuses your ordered `sum` and divides by the stored count after the sum.
+**Current task:** read [011 — argmax](lessons/011-argmax.md) and edit
+`exercises/03_reductions/011_argmax.rs`. Return a flat row-major index, not a value.
+Return the first NaN index if any NaN exists. Otherwise, return the first maximum index.
+Both zero signs tie. Empty input panics with the exact documented message.
+Your public `rumpy::amax` passes all 10 preserved contract tests and now counts as graduated.
+It also passes 125 saved NumPy cases and 5 empty cases. An independent review found no numerical defect.
 The author changed no learner source, exports, callers, or earlier runners.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, and `009_mean` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, and `010_amax` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -53,13 +52,16 @@ Add the corresponding comment to each file without a test change:
 
 // In exercises/03_reductions/009_mean.rs:
 // TODO (historical, completed): implementation moved to rumpy::mean.
+
+// In exercises/03_reductions/010_amax.rs:
+// TODO (historical, completed): implementation moved to rumpy::amax.
 ```
 
 ```sh
-rustlings hint 010_amax
-rustlings run 010_amax
+rustlings hint 011_argmax
+rustlings run 011_argmax
 # Headless checks:
-cargo test --bin 010_amax
+cargo test --bin 011_argmax
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -70,8 +72,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/03_reductions/010_amax.rs active task: edit this
-solutions/03_reductions/010_amax.rs reference: compare after your attempt
+exercises/03_reductions/011_argmax.rs active task: edit this
+solutions/03_reductions/011_argmax.rs reference: compare after your attempt
+src/operations/amax.rs            your completed implementation
+exercises/03_reductions/010_amax.rs original tests against rumpy::amax
 src/operations/mean.rs            your completed implementation
 exercises/03_reductions/009_mean.rs original tests against rumpy::mean
 exercises/03_reductions/008_sum.rs  original tests against rumpy::operations::sum
@@ -129,7 +133,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement amax"
+git commit -m "Implement argmax"
 git push origin main
 ```
 
@@ -164,16 +168,17 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, and `009_mean` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, and `010_amax` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
 The checker runs all original assertions against the graduated public APIs and the references.
 The previous reshape stride regression is resolved. No temporary library substitute is necessary.
-The current amax stub deliberately fails at `todo!`. Its reference has 10 identical contract tests.
-The amax fixture contains 125 scalar cases and 5 empty cases from real NumPy 2.4.3.
-Mixed-zero tie bits and huge empty shapes have separate Rust tests.
+The current argmax stub deliberately fails at `todo!`. Its reference has 13 identical contract tests.
+The argmax fixture contains 183 index cases and 5 empty cases from real NumPy 2.4.3.
+Its reference passes in debug and optimized builds, including huge empty shapes.
+The public amax also matches its saved fixtures. No reference enters `src/`.
 The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/010-authoring.md) for the checks and baseline errors.
+All original assertions remain unchanged. See [the publication review](validation/011-authoring.md) for the checks and baseline errors.
