@@ -1,23 +1,11 @@
 // Exercise 010: maximum of every stored value.
 // Read lessons/010-amax.md. Keep the tests intact.
-use rumpy::Array;
-
-/// Reduce all ranks to one f64 without changing the input.
-/// Empty input panics with "amax requires at least one element".
-/// Any NaN produces NaN (class only). Otherwise copy the maximum's bits.
-/// Equal values retain the FIRST stored value, including signed-zero ties.
-pub fn amax(a: &Array) -> f64 {
-    // TODO: Select the maximum with the documented NaN and tie rules.
-    let _ = a;
-    todo!("amax")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::amax;
-    use rumpy::Array;
+    use rumpy::{Array, amax};
 
     fn assert_amax(values: &[f64], shape: &[usize], expected: f64) {
         let a = Array::from_vec(values.to_vec(), shape.to_vec()).unwrap();
