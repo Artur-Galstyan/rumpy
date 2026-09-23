@@ -1,3 +1,5 @@
+use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
+
 use crate::Array;
 
 /// Add corresponding f64 values into a new Array with the same shape.
@@ -7,12 +9,21 @@ pub fn add(a: &Array, b: &Array) -> Array {
         panic!("add requires identical shapes")
     }
 
-    let data: Vec<f64> = a
-        .as_slice()
-        .iter()
-        .zip(b.as_slice())
-        .map(|x| x.0 + x.1)
-        .collect();
-
-    Array::from_vec(data, a.shape().to_vec()).expect("invalid args")
+    if a.size() > 1_000_000 {
+        let data: Vec<f64> = a
+            .as_slice()
+            .par_iter()
+            .zip(b.as_slice())
+            .map(|x| x.0 + x.1)
+            .collect();
+        Array::from_vec(data, a.shape().to_vec()).expect("invalid args")
+    } else {
+        let data: Vec<f64> = a
+            .as_slice()
+            .iter()
+            .zip(b.as_slice())
+            .map(|x| x.0 + x.1)
+            .collect();
+        Array::from_vec(data, a.shape().to_vec()).expect("invalid args")
+    }
 }

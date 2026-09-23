@@ -33,3 +33,4 @@ edition = "2024"
 publish = false
 
 [dependencies]
+rayon = "1.12.0"
