@@ -16,19 +16,19 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [011 — argmax](lessons/011-argmax.md) and edit
-`exercises/03_reductions/011_argmax.rs`. Return a flat row-major index, not a value.
-Return the first NaN index if any NaN exists. Otherwise, return the first maximum index.
-Both zero signs tie. Empty input panics with the exact documented message.
-Your public `rumpy::amax` passes all 10 preserved contract tests and now counts as graduated.
-It also passes 125 saved NumPy cases and 5 empty cases. An independent review found no numerical defect.
+**Current task:** read [012 — add](lessons/012-add.md) and edit
+`exercises/04_elementwise/012_add.rs`. Add corresponding pairs into a new Array.
+Require identical shapes, preserve empty and scalar shapes, and do not broadcast.
+Your argmax passes all 13 preserved tests locally and against `rumpy::argmax` in a
+separate disposable test module. It also passes 183 NumPy index cases and 5 empty cases.
+Its old runner still imports `super::argmax`, so graduation awaits your public-API test connection.
 The author changed no learner source, exports, callers, or earlier runners.
 If Rustlings starts at an earlier completed exercise, check it and press `n`.
 The filename prefix is the global exercise order. Matching solutions use the same prefix.
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, and `010_amax` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, and `011_argmax` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -55,13 +55,16 @@ Add the corresponding comment to each file without a test change:
 
 // In exercises/03_reductions/010_amax.rs:
 // TODO (historical, completed): implementation moved to rumpy::amax.
+
+// In exercises/03_reductions/011_argmax.rs:
+// TODO (historical, completed): local and public implementations pass; connect the public-API tests.
 ```
 
 ```sh
-rustlings hint 011_argmax
-rustlings run 011_argmax
+rustlings hint 012_add
+rustlings run 012_add
 # Headless checks:
-cargo test --bin 011_argmax
+cargo test --bin 012_add
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -72,8 +75,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/03_reductions/011_argmax.rs active task: edit this
-solutions/03_reductions/011_argmax.rs reference: compare after your attempt
+exercises/04_elementwise/012_add.rs active task: edit this
+solutions/04_elementwise/012_add.rs reference: compare after your attempt
+src/operations/argmax.rs           your passing public copy
+exercises/03_reductions/011_argmax.rs passing local tests; public connection pending
 src/operations/amax.rs            your completed implementation
 exercises/03_reductions/010_amax.rs original tests against rumpy::amax
 src/operations/mean.rs            your completed implementation
@@ -133,7 +138,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement argmax"
+git commit -m "Implement add"
 git push origin main
 ```
 
@@ -168,17 +173,19 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, and `010_amax` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, and `011_argmax` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
 The checker runs all original assertions against the graduated public APIs and the references.
 The previous reshape stride regression is resolved. No temporary library substitute is necessary.
-The current argmax stub deliberately fails at `todo!`. Its reference has 13 identical contract tests.
-The argmax fixture contains 183 index cases and 5 empty cases from real NumPy 2.4.3.
-Its reference passes in debug and optimized builds, including huge empty shapes.
-The public amax also matches its saved fixtures. No reference enters `src/`.
+The current add stub deliberately fails at `todo!("add")`. Its reference has 12 identical contract tests.
+The add fixture contains 141 cases and 909 output values from real NumPy 2.4.3.
+Regenerate it with `python3 validation/generate_add_numpy.py` in an environment with NumPy installed.
+The checker requires a nonempty fixture for every recorded operation.
+The add reference passes in debug and optimized builds, including huge empty shapes.
+The public argmax is tested separately from its still-local runner. It is not graduated.
 The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/011-authoring.md) for the checks and baseline errors.
+All original assertions remain unchanged. See [the publication review](validation/012-authoring.md) for the checks and baseline errors.

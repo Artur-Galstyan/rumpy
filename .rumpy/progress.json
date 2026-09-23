@@ -1,8 +1,8 @@
 {
-  "current_exercise": "011_argmax",
-  "sequence": 11,
-  "last_handled_learner_commit": "9fd675d5647b181fb0595fb62f66092c1aeed8f8",
-  "next_candidate": "add: same-shape elementwise addition before broadcasting",
+  "current_exercise": "012_add",
+  "sequence": 12,
+  "last_handled_learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208",
+  "next_candidate": "multiply: same-shape elementwise multiplication before broadcasting",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -101,6 +101,17 @@
       "library_target": "src/operations/argmax.rs",
       "extends": null,
       "source_learner_commit": "9fd675d5647b181fb0595fb62f66092c1aeed8f8",
+      "status": "solved_pending_regression_connection",
+      "public_api": "rumpy::argmax",
+      "public_implementation": "src/operations/argmax.rs",
+      "learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208"
+    },
+    "add": {
+      "exercise": "012_add",
+      "implementation": "exercises/04_elementwise/012_add.rs",
+      "library_target": "src/operations/add.rs",
+      "extends": null,
+      "source_learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208",
       "status": "unfinished"
     }
   },
@@ -135,7 +146,10 @@
     "9fd675d: amax is learner-graduated at rumpy::amax. All 10 preserved contract tests pass. Only the grouped public import differs from the reference test module. Independent debug/release review passed 125 saved NumPy cases, 5 empty cases, and 10 additional edge cases.",
     "Negative infinity is a valid amax initial value within this f64 contract. Strict comparisons preserve the first equal maximum, and explicit NaN checks prevent infinity from hiding a later NaN. No numerical defect found.",
     "010_amax also lacks the historical // TODO marker. All learner source, exports, callers, and earlier runners remain unchanged by this publication.",
-    "011_argmax returns a flat usize index across all ranks. First NaN wins if present; otherwise first maximum wins, including signed-zero ties. Empty input has an exact panic. Real NumPy fixtures contain 183 nonempty and 5 empty cases."
+    "011_argmax returns a flat usize index across all ranks. First NaN wins if present; otherwise first maximum wins, including signed-zero ties. Empty input has an exact panic. Real NumPy fixtures contain 183 nonempty and 5 empty cases.",
+    "5dd5bcb: argmax passes 13 unchanged contract tests locally and against rumpy::argmax in a disposable test module. Its runner still imports super::argmax, so it remains solved_pending_regression_connection, not graduated. Strict comparison retains first ties; early NaN return selects the first NaN. No numerical defect found within the contract.",
+    "011_argmax also lacks the required historical // TODO marker. The checker permits this baseline for verified solved-active tasks without editing their runners. All src/ and older exercise files remain unchanged.",
+    "012_add introduces same-shape elementwise f64 addition into independent storage. Whole-shape equality precedes empty handling; unequal shapes panic with exact text. No broadcasting or shared scaffold changes. NaNs compare by class, other results by bits."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -146,7 +160,8 @@
       "006_reshape",
       "008_sum",
       "009_mean",
-      "010_amax"
+      "010_amax",
+      "011_argmax"
     ],
     "test_failures": {}
   }

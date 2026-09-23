@@ -22,6 +22,8 @@ bin = [
   { name = "010_amax_sol", path = "solutions/03_reductions/010_amax.rs" },
   { name = "011_argmax", path = "exercises/03_reductions/011_argmax.rs" },
   { name = "011_argmax_sol", path = "solutions/03_reductions/011_argmax.rs" },
+  { name = "012_add", path = "exercises/04_elementwise/012_add.rs" },
+  { name = "012_add_sol", path = "solutions/04_elementwise/012_add.rs" },
 ]
 
 [package]

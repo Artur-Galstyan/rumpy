@@ -3,7 +3,8 @@
 Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
-transpose(array) -> Array, sum/mean/amax(array) -> f64, and argmax(array) -> usize. Solved active tasks and their public copies stay
+transpose(array) -> Array, sum/mean/amax(array) -> f64, argmax(array) -> usize,
+and add(array, array) -> Array. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -71,6 +72,10 @@ def main():
     graduated_exercises = {item["exercise"] for item in graduated.values()}
     if current in graduated_exercises:
         raise ValueError("The current publication needs an unfinished task")
+    for operation in graduated | progress.get("active", {}):
+        fixture = ROOT / "validation" / f"{operation}-numpy.json"
+        if not fixture.is_file() or not json.loads(fixture.read_text()).get("cases"):
+            raise ValueError(f"Missing or empty NumPy fixture for {operation}")
 
     with tempfile.TemporaryDirectory(prefix="rumpy-author-check-") as temp:
         work = Path(temp) / "repo"
@@ -136,8 +141,9 @@ def main():
 
         declared_missing = set(progress.get("author_check_baseline", {}).get("missing_todo", []))
         connected_exercises = {record["exercise"] for record in public_records.values()}
-        if not declared_missing <= connected_exercises:
-            raise ValueError("Only connected public-API runners may have a historical-marker baseline")
+        solved_active_exercises = {record["exercise"] for record in solved_active.values()}
+        if not declared_missing <= connected_exercises | solved_active_exercises:
+            raise ValueError("Only verified connected or solved-active runners may have a historical-marker baseline")
         missing = set()
         for name in declared_missing:
             item = exercises[name]
@@ -223,6 +229,33 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
+                if name == "add":
+                    # A binary elementwise operation returns an owned Array.
+                    left = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["left_bits"])
+                    right = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["right_bits"])
+                    expected = ", ".join("None" if bits is None else f"Some({bits}u64)" for bits in case["expected"])
+                    checks.extend([
+                        "    {",
+                        f"    let expected_shape: &[usize] = &{json.dumps(case['shape'])};",
+                        f"    let a = rumpy::Array::from_vec(vec![{left}], expected_shape.to_vec()).unwrap();",
+                        f"    let b = rumpy::Array::from_vec(vec![{right}], expected_shape.to_vec()).unwrap();",
+                        "    let before_a: Vec<u64> = a.as_slice().iter().map(|x| x.to_bits()).collect();",
+                        "    let before_b: Vec<u64> = b.as_slice().iter().map(|x| x.to_bits()).collect();",
+                        f"    let result = {callable_name}(&a, &b);",
+                        f"    let expected: &[Option<u64>] = &[{expected}];",
+                        "    assert_eq!(result.shape(), expected_shape);",
+                        "    assert_eq!(result.size(), expected.len());",
+                        "    for (actual, expected) in result.as_slice().iter().zip(expected) {",
+                        "        match expected { Some(bits) => assert_eq!(actual.to_bits(), *bits), None => assert!(actual.is_nan()) }",
+                        "    }",
+                        "    assert_eq!(a.shape(), expected_shape);",
+                        "    assert_eq!(b.shape(), expected_shape);",
+                        "    assert_eq!(a.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(), before_a);",
+                        "    assert_eq!(b.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(), before_b);",
+                        "    }",
+                    ])
+                    case_count += 1
+                    continue
                 if name in {"sum", "mean", "amax", "argmax"}:
                     # Scalar reductions have no output Array shape or buffer.
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
@@ -325,7 +358,8 @@ def main():
             "\n".join(declarations + checks) + "\n"
         )
         run(["cargo", "test", "--test", "author_numpy_oracle"], work)
-        print(f"PASS {case_count} saved NumPy cases, including array shapes, exact non-NaN bits, reduction NaN classes, and argmax indices")
+        run(["cargo", "test", "--release", "--test", "author_numpy_oracle"], work)
+        print(f"PASS {case_count} saved NumPy cases in debug and release, including array shapes, exact non-NaN bits, reduction NaN classes, and argmax indices")
         print(f"PASS {rejected_count} saved NumPy shape rejections with exact scaffold errors")
         print(f"PASS {empty_reduction_count} saved NumPy empty reductions with exact Rust panic text")
     print("PASS publication checks with any BASELINE ERROR above reported separately. Learner files remain untouched.")

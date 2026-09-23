@@ -1,9 +1,9 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your public amax passes its preserved regression tests.
-Read lessons/011-argmax.md, then edit exercises/03_reductions/011_argmax.rs. Press h for hints.
-Return the first NaN index, or the first maximum index when no NaN exists.
+Your argmax passes locally and through its public API; its old runner still tests the local copy.
+Read lessons/012-add.md, then edit exercises/04_elementwise/012_add.rs. Press h for hints.
+Add matching pairs into a new Array. Require identical shapes; no broadcasting yet.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -313,6 +313,7 @@ The old runner needs its historical // TODO comment. Keep all assertions intact.
 [[exercises]]
 name = "011_argmax"
 dir = "03_reductions"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -334,4 +335,33 @@ Hint 4 - NaNs:
 A NaN must win even after positive infinity. More than one NaN must return the
 first NaN index. An equality search for a NaN maximum cannot find it.
 The reference is solutions/03_reductions/011_argmax.rs; compare after your attempt.
+
+Solved locally and in the public copy. The original runner still uses super::argmax.
+Connect its preserved tests to rumpy::argmax and add a historical // TODO marker.
+"""
+
+[[exercises]]
+name = "012_add"
+dir = "04_elementwise"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Output:
+Read lessons/012-add.md. This operation returns an Array, not a reduction scalar.
+Each stored position has one partner in the other input.
+
+Hint 2 - Validation:
+Compare whole shapes before any empty shortcut. Equal sizes do not imply equal shapes.
+No broadcasting belongs to this exercise, even for a scalar plus a one-element vector.
+
+Hint 3 - Pair traversal:
+The stored slices already follow row-major order. Iterator::zip pairs two slices,
+but it does not check their shapes. Preserve the original shape in independent storage.
+
+Hint 4 - Arithmetic:
+Use the ordinary f64 addition for each pair. No accumulator or zero seed is needed.
+Check negative zero plus negative zero and the NaN-class contract in the lesson.
+The reference is solutions/04_elementwise/012_add.rs; compare after your attempt.
 """

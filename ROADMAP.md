@@ -16,3 +16,7 @@ New attempts guide examples and difficulty, but **a passing test result is not a
 for the next exercise. If an earlier operation is broken, give brief feedback without
 rewriting it. A next task can exercise the same concept through another function or avoid
 that dependency. Do not secretly replace learner code with a working reference.
+
+Current step: `012_add`, identical-shape elementwise addition without broadcasting.
+Next candidate: same-shape `multiply`, then a separate broadcasting contract.
+`011_argmax` is solved locally and publicly; its original runner still needs the public-API connection.
