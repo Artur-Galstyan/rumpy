@@ -5,4 +5,4 @@ pub use array::{Array, ShapeError};
 pub mod creation;
 pub use creation::{arange, eye, full, ones, zeros};
 pub mod operations;
-pub use operations::{amax, argmax, mean, reshape, sum, transpose};
+pub use operations::{add, amax, argmax, mean, reshape, sum, transpose};

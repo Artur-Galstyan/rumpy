@@ -1,20 +1,11 @@
 // Read lessons/012-add.md. This exercise supports equal shapes only.
-use rumpy::Array;
-
-/// Add corresponding f64 values into a new Array with the same shape.
-/// Unequal shapes panic with "add requires identical shapes"; no broadcasting.
-pub fn add(a: &Array, b: &Array) -> Array {
-    // TODO: Check the shape contract and add corresponding stored values.
-    let _ = (a, b);
-    todo!("add")
-}
 
 fn main() {}
 
 #[cfg(test)]
 mod tests {
-    use super::add;
-    use rumpy::Array;
+
+    use rumpy::{Array, add};
 
     fn array(data: &[f64], shape: &[usize]) -> Array {
         Array::from_vec(data.to_vec(), shape.to_vec()).unwrap()
