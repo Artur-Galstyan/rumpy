@@ -1,9 +1,9 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your argmax passes locally and through its public API; its old runner still tests the local copy.
-Read lessons/012-add.md, then edit exercises/04_elementwise/012_add.rs. Press h for hints.
-Add matching pairs into a new Array. Require identical shapes; no broadcasting yet.
+Your add passes through its public API and its preserved tests.
+Read lessons/013-multiply.md, then edit exercises/04_elementwise/013_multiply.rs. Press h for hints.
+Multiply matching pairs into a new Array. Require identical shapes; no broadcasting yet.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -343,6 +343,7 @@ Connect its preserved tests to rumpy::argmax and add a historical // TODO marker
 [[exercises]]
 name = "012_add"
 dir = "04_elementwise"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -364,4 +365,30 @@ Hint 4 - Arithmetic:
 Use the ordinary f64 addition for each pair. No accumulator or zero seed is needed.
 Check negative zero plus negative zero and the NaN-class contract in the lesson.
 The reference is solutions/04_elementwise/012_add.rs; compare after your attempt.
+"""
+
+[[exercises]]
+name = "013_multiply"
+dir = "04_elementwise"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Output:
+Read lessons/013-multiply.md. Return a new Array with the original shape.
+Each stored value has exactly one partner at the same flat position.
+
+Hint 2 - Validation:
+Compare whole shapes first, even for empty inputs. Equal element counts do not
+imply equal shapes. NumPy broadcasting is outside this task.
+
+Hint 3 - Traversal:
+The two valid Array slices match their shapes. Pair them in stored order.
+You do not need an axis product or a multi-dimensional index.
+
+Hint 4 - Arithmetic:
+Use one ordinary f64 multiplication per pair. A zero seed changes NaN and
+infinity cases. Preserve negative-zero results and leave input bits intact.
+The comparison answer is solutions/04_elementwise/013_multiply.rs.
 """

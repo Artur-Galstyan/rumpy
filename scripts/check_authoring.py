@@ -4,7 +4,7 @@ Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
 transpose(array) -> Array, sum/mean/amax(array) -> f64, argmax(array) -> usize,
-and add(array, array) -> Array. Solved active tasks and their public copies stay
+and add/multiply(array, array) -> Array. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -229,7 +229,7 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name == "add":
+                if name in {"add", "multiply"}:
                     # A binary elementwise operation returns an owned Array.
                     left = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["left_bits"])
                     right = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["right_bits"])

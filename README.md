@@ -16,9 +16,11 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [012 — add](lessons/012-add.md) and edit
-`exercises/04_elementwise/012_add.rs`. Add corresponding pairs into a new Array.
+**Current task:** read [013 — multiply](lessons/013-multiply.md) and edit
+`exercises/04_elementwise/013_multiply.rs`. Multiply corresponding pairs into a new Array.
 Require identical shapes, preserve empty and scalar shapes, and do not broadcast.
+Your add passes its 12 preserved tests through the public API. A separate check
+also passed the Rayon branch above one million elements.
 Your argmax passes all 13 preserved tests locally and against `rumpy::argmax` in a
 separate disposable test module. It also passes 183 NumPy index cases and 5 empty cases.
 Its old runner still imports `super::argmax`, so graduation awaits your public-API test connection.
@@ -28,7 +30,7 @@ The filename prefix is the global exercise order. Matching solutions use the sam
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, and `011_argmax` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, and `012_add` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -58,13 +60,15 @@ Add the corresponding comment to each file without a test change:
 
 // In exercises/03_reductions/011_argmax.rs:
 // TODO (historical, completed): local and public implementations pass; connect the public-API tests.
+// In exercises/04_elementwise/012_add.rs:
+// TODO (historical, completed): implementation moved to rumpy::add.
 ```
 
 ```sh
-rustlings hint 012_add
-rustlings run 012_add
+rustlings hint 013_multiply
+rustlings run 013_multiply
 # Headless checks:
-cargo test --bin 012_add
+cargo test --bin 013_multiply
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -75,8 +79,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/04_elementwise/012_add.rs active task: edit this
-solutions/04_elementwise/012_add.rs reference: compare after your attempt
+exercises/04_elementwise/013_multiply.rs active task: edit this
+solutions/04_elementwise/013_multiply.rs reference: compare after your attempt
+src/operations/add.rs              your completed implementation
+exercises/04_elementwise/012_add.rs original tests against rumpy::add
 src/operations/argmax.rs           your passing public copy
 exercises/03_reductions/011_argmax.rs passing local tests; public connection pending
 src/operations/amax.rs            your completed implementation
@@ -138,7 +144,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement add"
+git commit -m "Implement multiply"
 git push origin main
 ```
 
@@ -173,19 +179,19 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, and `011_argmax` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, and `012_add` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
 The checker runs all original assertions against the graduated public APIs and the references.
 The previous reshape stride regression is resolved. No temporary library substitute is necessary.
-The current add stub deliberately fails at `todo!("add")`. Its reference has 12 identical contract tests.
+The current multiply stub deliberately fails at `todo!("multiply")`. Its reference has 11 identical contract tests.
 The add fixture contains 141 cases and 909 output values from real NumPy 2.4.3.
-Regenerate it with `python3 validation/generate_add_numpy.py` in an environment with NumPy installed.
+Regenerate the multiply fixture with `python3 validation/generate_multiply_numpy.py` in an environment with NumPy installed.
 The checker requires a nonempty fixture for every recorded operation.
-The add reference passes in debug and optimized builds, including huge empty shapes.
+The multiply reference passes in debug and optimized builds, including huge empty shapes.
 The public argmax is tested separately from its still-local runner. It is not graduated.
 The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/012-authoring.md) for the checks and baseline errors.
+All original assertions remain unchanged. See [the publication review](validation/013-authoring.md) for the checks and baseline errors.

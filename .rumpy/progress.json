@@ -1,8 +1,8 @@
 {
-  "current_exercise": "012_add",
-  "sequence": 12,
-  "last_handled_learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208",
-  "next_candidate": "multiply: same-shape elementwise multiplication before broadcasting",
+  "current_exercise": "013_multiply",
+  "sequence": 13,
+  "last_handled_learner_commit": "19526d16186bb607ee369e9659961f8d7d2c4551",
+  "next_candidate": "broadcasting: extend binary elementwise operations with explicit shape rules",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -92,6 +92,15 @@
       "regression_runner": "exercises/03_reductions/010_amax.rs",
       "regression_test_import": "use rumpy::{Array, amax};",
       "reference_test_import": "use super::amax;\n    use rumpy::Array;"
+    },
+    "add": {
+      "exercise": "012_add",
+      "implementation": "src/operations/add.rs",
+      "public_api": "rumpy::add",
+      "learner_commit": "19526d16186bb607ee369e9659961f8d7d2c4551",
+      "regression_runner": "exercises/04_elementwise/012_add.rs",
+      "regression_test_import": "use rumpy::{Array, add};",
+      "reference_test_import": "use super::add;\n    use rumpy::Array;"
     }
   },
   "active": {
@@ -106,12 +115,12 @@
       "public_implementation": "src/operations/argmax.rs",
       "learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208"
     },
-    "add": {
-      "exercise": "012_add",
-      "implementation": "exercises/04_elementwise/012_add.rs",
-      "library_target": "src/operations/add.rs",
+    "multiply": {
+      "exercise": "013_multiply",
+      "implementation": "exercises/04_elementwise/013_multiply.rs",
+      "library_target": "src/operations/multiply.rs",
       "extends": null,
-      "source_learner_commit": "5dd5bcb26f9c39ea61b4623e94ceb9cc9914c208",
+      "source_learner_commit": "19526d16186bb607ee369e9659961f8d7d2c4551",
       "status": "unfinished"
     }
   },
@@ -149,7 +158,11 @@
     "011_argmax returns a flat usize index across all ranks. First NaN wins if present; otherwise first maximum wins, including signed-zero ties. Empty input has an exact panic. Real NumPy fixtures contain 183 nonempty and 5 empty cases.",
     "5dd5bcb: argmax passes 13 unchanged contract tests locally and against rumpy::argmax in a disposable test module. Its runner still imports super::argmax, so it remains solved_pending_regression_connection, not graduated. Strict comparison retains first ties; early NaN return selects the first NaN. No numerical defect found within the contract.",
     "011_argmax also lacks the required historical // TODO marker. The checker permits this baseline for verified solved-active tasks without editing their runners. All src/ and older exercise files remain unchanged.",
-    "012_add introduces same-shape elementwise f64 addition into independent storage. Whole-shape equality precedes empty handling; unequal shapes panic with exact text. No broadcasting or shared scaffold changes. NaNs compare by class, other results by bits."
+    "012_add introduces same-shape elementwise f64 addition into independent storage. Whole-shape equality precedes empty handling; unequal shapes panic with exact text. No broadcasting or shared scaffold changes. NaNs compare by class, other results by bits.",
+    "19526d1: add is learner-graduated through rumpy::add. All 12 preserved contract tests pass. The grouped public import is the sole change to the original assertions. The owned output preserves shapes and input bits.",
+    "The rayon dependency and parallel branch belong to the learner. No author edits to src/, dependency files, callers, or prior runners. 012_add lacks the historical // TODO marker, which remains a learner-owned edit.",
+    "013_multiply introduces same-shape elementwise f64 products in independent storage. NaN results compare by class, other results by bits. Broadcasting remains a later lesson.",
+    "The learner Rayon add branch above one million values passed an independent 1,000,001-value ordered-output and unchanged-input-bit check."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -161,7 +174,8 @@
       "008_sum",
       "009_mean",
       "010_amax",
-      "011_argmax"
+      "011_argmax",
+      "012_add"
     ],
     "test_failures": {}
   }
