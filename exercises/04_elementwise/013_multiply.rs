@@ -1,12 +1,30 @@
+use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
 // Read lessons/013-multiply.md. This exercise supports equal shapes only.
 use rumpy::Array;
 
 /// Multiply corresponding f64 values into a new Array with the same shape.
 /// Unequal shapes panic with "multiply requires identical shapes"; no broadcasting.
 pub fn multiply(a: &Array, b: &Array) -> Array {
-    // TODO: Check complete shapes, then multiply each stored pair into new storage.
-    let _ = (a, b);
-    todo!("multiply")
+    if a.shape() != b.shape() {
+        panic!("multiply requires identical shapes")
+    }
+    if a.size() > 1_000_000 {
+        let data: Vec<f64> = a
+            .as_slice()
+            .par_iter()
+            .zip(b.as_slice())
+            .map(|x| x.0 * x.1)
+            .collect();
+        Array::from_vec(data, a.shape().to_vec()).expect("invalid args")
+    } else {
+        let data: Vec<f64> = a
+            .as_slice()
+            .iter()
+            .zip(b.as_slice())
+            .map(|x| x.0 * x.1)
+            .collect();
+        Array::from_vec(data, a.shape().to_vec()).expect("invalid args")
+    }
 }
 
 fn main() {}
