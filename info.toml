@@ -1,9 +1,9 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your add passes through its public API and its preserved tests.
-Read lessons/013-multiply.md, then edit exercises/04_elementwise/013_multiply.rs. Press h for hints.
-Multiply matching pairs into a new Array. Require identical shapes; no broadcasting yet.
+Your multiply passes its local tests and has a public copy. Connect its old runner to the public API when you graduate it.
+Read lessons/014-subtract.md, then edit exercises/04_elementwise/014_subtract.rs. Press h for hints.
+Subtract right values from left values into a new Array. Require identical shapes; no broadcasting yet.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -370,6 +370,7 @@ The reference is solutions/04_elementwise/012_add.rs; compare after your attempt
 [[exercises]]
 name = "013_multiply"
 dir = "04_elementwise"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -391,4 +392,30 @@ Hint 4 - Arithmetic:
 Use one ordinary f64 multiplication per pair. A zero seed changes NaN and
 infinity cases. Preserve negative-zero results and leave input bits intact.
 The comparison answer is solutions/04_elementwise/013_multiply.rs.
+"""
+
+[[exercises]]
+name = "014_subtract"
+dir = "04_elementwise"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Operand order:
+Read lessons/014-subtract.md. The left value comes before the right value.
+Return a new Array, not a reduction scalar. Do not reuse add with negation.
+
+Hint 2 - Shape:
+Compare the entire shape before any empty shortcut. Equal sizes do not mean
+equal shapes. A scalar and a one-element vector must not broadcast.
+
+Hint 3 - Stored values:
+Both slices follow row-major order. Iterator::zip pairs corresponding values,
+but it does not check shapes. Copy the original shape into the output.
+
+Hint 4 - Floating point:
+Use ordinary f64 subtraction once for each pair. Signed zeros, NaNs and
+infinities make a seeded accumulator or swapped operands incorrect.
+The separate answer is solutions/04_elementwise/014_subtract.rs.
 """

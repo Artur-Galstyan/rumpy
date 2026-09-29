@@ -1,8 +1,8 @@
 {
-  "current_exercise": "013_multiply",
-  "sequence": 13,
-  "last_handled_learner_commit": "19526d16186bb607ee369e9659961f8d7d2c4551",
-  "next_candidate": "broadcasting: extend binary elementwise operations with explicit shape rules",
+  "current_exercise": "014_subtract",
+  "sequence": 14,
+  "last_handled_learner_commit": "82707aee85497d12cc453eb1a7e28b10263c6adb",
+  "next_candidate": "broadcast_to: shape alignment and singleton-axis expansion before broadcast arithmetic",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -121,6 +121,17 @@
       "library_target": "src/operations/multiply.rs",
       "extends": null,
       "source_learner_commit": "19526d16186bb607ee369e9659961f8d7d2c4551",
+      "status": "solved_pending_regression_connection",
+      "public_api": "rumpy::multiply",
+      "public_implementation": "src/operations/multiply.rs",
+      "learner_commit": "82707aee85497d12cc453eb1a7e28b10263c6adb"
+    },
+    "subtract": {
+      "exercise": "014_subtract",
+      "implementation": "exercises/04_elementwise/014_subtract.rs",
+      "library_target": "src/operations/subtract.rs",
+      "extends": null,
+      "source_learner_commit": "82707aee85497d12cc453eb1a7e28b10263c6adb",
       "status": "unfinished"
     }
   },
@@ -162,7 +173,9 @@
     "19526d1: add is learner-graduated through rumpy::add. All 12 preserved contract tests pass. The grouped public import is the sole change to the original assertions. The owned output preserves shapes and input bits.",
     "The rayon dependency and parallel branch belong to the learner. No author edits to src/, dependency files, callers, or prior runners. 012_add lacks the historical // TODO marker, which remains a learner-owned edit.",
     "013_multiply introduces same-shape elementwise f64 products in independent storage. NaN results compare by class, other results by bits. Broadcasting remains a later lesson.",
-    "The learner Rayon add branch above one million values passed an independent 1,000,001-value ordered-output and unchanged-input-bit check."
+    "The learner Rayon add branch above one million values passed an independent 1,000,001-value ordered-output and unchanged-input-bit check.",
+    "82707ae: multiply passes 11 original local tests and the same public-copy tests in a disposable module. A separate 1,000,001-element check passed the Rayon branch in both copies. The runner still imports super::multiply, so the public-API test connection and historical TODO marker remain learner-owned; the author does not edit it.",
+    "014_subtract introduces a distinct same-shape elementwise f64 difference with preserved operand order. It precedes broadcasting, which still needs a separate shape contract."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -175,7 +188,8 @@
       "009_mean",
       "010_amax",
       "011_argmax",
-      "012_add"
+      "012_add",
+      "013_multiply"
     ],
     "test_failures": {}
   }

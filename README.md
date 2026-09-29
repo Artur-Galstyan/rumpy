@@ -16,9 +16,12 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [013 — multiply](lessons/013-multiply.md) and edit
-`exercises/04_elementwise/013_multiply.rs`. Multiply corresponding pairs into a new Array.
+**Current task:** read [014 — subtract](lessons/014-subtract.md) and edit
+`exercises/04_elementwise/014_subtract.rs`. Subtract each right value from its left partner.
 Require identical shapes, preserve empty and scalar shapes, and do not broadcast.
+Your multiply passes all 11 original local tests and has a public `rumpy::multiply` copy.
+Its runner still imports the local function. Connect its preserved tests to the public API
+when you graduate it; the author does not change that runner or your code.
 Your add passes its 12 preserved tests through the public API. A separate check
 also passed the Rayon branch above one million elements.
 Your argmax passes all 13 preserved tests locally and against `rumpy::argmax` in a
@@ -30,7 +33,7 @@ The filename prefix is the global exercise order. Matching solutions use the sam
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, and `012_add` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, and `013_multiply` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -62,13 +65,15 @@ Add the corresponding comment to each file without a test change:
 // TODO (historical, completed): local and public implementations pass; connect the public-API tests.
 // In exercises/04_elementwise/012_add.rs:
 // TODO (historical, completed): implementation moved to rumpy::add.
+// In exercises/04_elementwise/013_multiply.rs, after you connect its public tests:
+// TODO (historical, completed): implementation moved to rumpy::multiply.
 ```
 
 ```sh
-rustlings hint 013_multiply
-rustlings run 013_multiply
+rustlings hint 014_subtract
+rustlings run 014_subtract
 # Headless checks:
-cargo test --bin 013_multiply
+cargo test --bin 014_subtract
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -79,7 +84,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/04_elementwise/013_multiply.rs active task: edit this
+exercises/04_elementwise/014_subtract.rs active task: edit this
+solutions/04_elementwise/014_subtract.rs reference: compare after your attempt
+src/operations/multiply.rs         your passing public copy
+exercises/04_elementwise/013_multiply.rs passing local tests; public connection pending
 solutions/04_elementwise/013_multiply.rs reference: compare after your attempt
 src/operations/add.rs              your completed implementation
 exercises/04_elementwise/012_add.rs original tests against rumpy::add
@@ -144,7 +152,7 @@ You can also open it directly. These files are spoilers for comparison, not libr
 git pull --ff-only
 # Solve the exercise, then move/refactor your code when ready.
 git add exercises/ src/
-git commit -m "Implement multiply"
+git commit -m "Implement subtract"
 git push origin main
 ```
 
@@ -179,19 +187,19 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, and `012_add` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, and `013_multiply` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
 The checker runs all original assertions against the graduated public APIs and the references.
 The previous reshape stride regression is resolved. No temporary library substitute is necessary.
-The current multiply stub deliberately fails at `todo!("multiply")`. Its reference has 11 identical contract tests.
+The current subtract stub deliberately fails at `todo!("subtract")`. Its reference has 8 identical contract tests.
 The add fixture contains 141 cases and 909 output values from real NumPy 2.4.3.
-Regenerate the multiply fixture with `python3 validation/generate_multiply_numpy.py` in an environment with NumPy installed.
+Regenerate the multiply or subtract fixture with the matching `validation/generate_*_numpy.py` script in an environment with NumPy installed.
 The checker requires a nonempty fixture for every recorded operation.
-The multiply reference passes in debug and optimized builds, including huge empty shapes.
-The public argmax is tested separately from its still-local runner. It is not graduated.
+The multiply and subtract references pass in debug and optimized builds, including huge empty shapes.
+The public argmax and multiply functions are tested separately from their still-local runners. Neither is graduated.
 The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/013-authoring.md) for the checks and baseline errors.
+All original assertions remain unchanged. See [the publication review](validation/014-authoring.md) for the checks and baseline errors.

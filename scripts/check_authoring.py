@@ -4,7 +4,7 @@ Python 3.11+, Cargo, and Rustlings 6.5.0 are required. Saved NumPy fixtures
 describe zeros/ones(shape), full(shape, scalar), arange(start, stop, step),
 eye(rows, cols), reshape(array, shape) -> Result<Array, ShapeError>, and
 transpose(array) -> Array, sum/mean/amax(array) -> f64, argmax(array) -> usize,
-and add/multiply(array, array) -> Array. Solved active tasks and their public copies stay
+and add/multiply/subtract(array, array) -> Array. Solved active tasks and their public copies stay
 distinct from graduation until the learner connects the original runner.
 Known missing historical markers remain visible baseline errors. A disposable
 project excludes those runners from a second Rustlings check. Their complete
@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run(args, cwd, *, unfinished=False, known_failure=None):
     result = subprocess.run(
-        args, cwd=cwd, text=True, capture_output=True, timeout=180
+        args, cwd=cwd, text=True, capture_output=True, timeout=600
     )
     output = result.stdout + result.stderr
     if known_failure:
@@ -41,7 +41,7 @@ def run(args, cwd, *, unfinished=False, known_failure=None):
     elif unfinished:
         valid = (
             result.returncode != 0
-            and "not yet implemented" in output
+            and f"not yet implemented: {args[-1].removeprefix('014_')}" in output
             and "test result: FAILED" in output
             and "could not compile" not in output
         )
@@ -107,6 +107,32 @@ def main():
             test_name = f"author_{name}_public"
             (work / "tests" / f"{test_name}.rs").write_text("#[cfg(test)]" + public_tests)
             run(["cargo", "test", "--test", test_name], work)
+        if "multiply" in solved_active:
+            # Exercise both learner-owned Rayon branches without editing their source.
+            (work / "tests/author_multiply_parallel.rs").write_text('''
+#[path = "../exercises/04_elementwise/013_multiply.rs"]
+mod learner;
+use rumpy::Array;
+
+#[test]
+fn million_and_one_products_match_oracle_for_local_and_public_copies() {
+    let count = 1_000_001;
+    let left: Vec<f64> = (0..count).map(|i| (i % 9) as f64 - 4.0).collect();
+    let right: Vec<f64> = (0..count).map(|i| (i % 7) as f64 - 3.0).collect();
+    let a = Array::from_vec(left.clone(), vec![count]).unwrap();
+    let b = Array::from_vec(right.clone(), vec![count]).unwrap();
+    for result in [learner::multiply(&a, &b), rumpy::multiply(&a, &b)] {
+        assert_eq!(result.shape(), &[count]);
+        assert_eq!(result.size(), count);
+        for (i, &value) in result.as_slice().iter().enumerate() {
+            assert_eq!(value.to_bits(), (left[i] * right[i]).to_bits(), "index {i}");
+        }
+    }
+    assert_eq!(a.as_slice(), left);
+    assert_eq!(b.as_slice(), right);
+}
+''')
+            run(["cargo", "test", "--test", "author_multiply_parallel"], work)
         run(["cargo", "test", "--bin", current], work, unfinished=True)
 
         # Require the same contract tests in each independent reference file.
@@ -229,7 +255,7 @@ def main():
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name in {"add", "multiply"}:
+                if name in {"add", "multiply", "subtract"}:
                     # A binary elementwise operation returns an owned Array.
                     left = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["left_bits"])
                     right = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["right_bits"])

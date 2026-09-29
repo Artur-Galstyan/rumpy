@@ -26,6 +26,8 @@ bin = [
   { name = "012_add_sol", path = "solutions/04_elementwise/012_add.rs" },
   { name = "013_multiply", path = "exercises/04_elementwise/013_multiply.rs" },
   { name = "013_multiply_sol", path = "solutions/04_elementwise/013_multiply.rs" },
+  { name = "014_subtract", path = "exercises/04_elementwise/014_subtract.rs" },
+  { name = "014_subtract_sol", path = "solutions/04_elementwise/014_subtract.rs" },
 ]
 
 [package]
