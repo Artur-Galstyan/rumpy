@@ -1,6 +1,7 @@
 mod add;
 mod amax;
 mod argmax;
+mod broadcast_to;
 mod mean;
 mod multiply;
 mod reshape;
@@ -11,6 +12,7 @@ mod transpose;
 pub use add::add;
 pub use amax::amax;
 pub use argmax::argmax;
+pub use broadcast_to::broadcast_to;
 pub use mean::mean;
 pub use multiply::multiply;
 pub use reshape::reshape;
