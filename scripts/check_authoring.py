@@ -23,7 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run(args, cwd, *, unfinished=False, known_failure=None):
     result = subprocess.run(
-        args, cwd=cwd, text=True, capture_output=True, timeout=600
+        args, cwd=cwd, text=True, capture_output=True,
+        timeout=1800 if args[:4] == ["cargo", "test", "--release", "--test"] else 600
     )
     output = result.stdout + result.stderr
     if known_failure:
@@ -41,7 +42,7 @@ def run(args, cwd, *, unfinished=False, known_failure=None):
     elif unfinished:
         valid = (
             result.returncode != 0
-            and f"not yet implemented: {args[-1].removeprefix('014_')}" in output
+            and f"not yet implemented: {args[-1].split('_', 1)[1]}" in output
             and "test result: FAILED" in output
             and "could not compile" not in output
         )
@@ -133,6 +134,31 @@ fn million_and_one_products_match_oracle_for_local_and_public_copies() {
 }
 ''')
             run(["cargo", "test", "--test", "author_multiply_parallel"], work)
+        if "subtract" in solved_active:
+            (work / "tests/author_subtract_parallel.rs").write_text('''
+#[path = "../exercises/04_elementwise/014_subtract.rs"]
+mod learner;
+use rumpy::Array;
+
+#[test]
+fn million_and_one_differences_match_oracle_for_local_and_public_copies() {
+    let count = 1_000_001;
+    let left: Vec<f64> = (0..count).map(|i| (i % 9) as f64 - 4.0).collect();
+    let right: Vec<f64> = (0..count).map(|i| (i % 7) as f64 - 3.0).collect();
+    let a = Array::from_vec(left.clone(), vec![count]).unwrap();
+    let b = Array::from_vec(right.clone(), vec![count]).unwrap();
+    for result in [learner::subtract(&a, &b), rumpy::subtract(&a, &b)] {
+        assert_eq!(result.shape(), &[count]);
+        assert_eq!(result.size(), count);
+        for (i, &value) in result.as_slice().iter().enumerate() {
+            assert_eq!(value.to_bits(), (left[i] - right[i]).to_bits(), "index {i}");
+        }
+    }
+    assert_eq!(a.as_slice(), left);
+    assert_eq!(b.as_slice(), right);
+}
+''')
+            run(["cargo", "test", "--test", "author_subtract_parallel"], work)
         run(["cargo", "test", "--bin", current], work, unfinished=True)
 
         # Require the same contract tests in each independent reference file.
@@ -323,12 +349,13 @@ fn million_and_one_products_match_oracle_for_local_and_public_copies() {
                     arguments = f"{case['rows']}usize, {case['cols']}usize"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
-                elif name in {"reshape", "transpose"}:
+                elif name in {"reshape", "transpose", "broadcast_to"}:
                     input_values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["input_bits"])
                     setup = [
-                        f"    let input = rumpy::Array::from_vec(vec![{input_values}], vec!{json.dumps(case['input_shape'])}).unwrap();"
+                        f"    let input = rumpy::Array::from_vec(vec![{input_values}], vec!{json.dumps(case['input_shape'])}).unwrap();",
+                        "    let before: Vec<u64> = input.as_slice().iter().map(|x| x.to_bits()).collect();",
                     ]
-                    arguments = "&input, expected_shape" if name == "reshape" else "&input"
+                    arguments = "&input, expected_shape" if name in {"reshape", "broadcast_to"} else "&input"
                     values = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["data_bits"])
                     data = f"[{values}]"
                     result_suffix = ".unwrap()" if name == "reshape" else ""
@@ -346,6 +373,9 @@ fn million_and_one_products_match_oracle_for_local_and_public_copies() {
                     "    for (actual, expected) in a.as_slice().iter().zip(expected_data) {",
                     "        assert_eq!(actual.to_bits(), expected.to_bits());",
                     "    }",
+                    *(["    assert_eq!(input.shape(), &" + json.dumps(case["input_shape"]) + ");",
+                       "    assert_eq!(input.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(), before);"]
+                      if name in {"reshape", "transpose", "broadcast_to"} else []),
                     "    }",
                 ])
                 case_count += 1

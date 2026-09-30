@@ -91,5 +91,5 @@ Record that same SHA in .rumpy/progress.json. A successful push acknowledges the
 Recheck the probe before publication to avoid a duplicate. After a normal push, read back
 remote SHA/files and probe state before notification. A newer unhandled commit remains pending.
 
-Keep the separate Hermes job on gpt-6-astra/openai-codex, daily 07:30 local time.
+Keep the separate Hermes job on gpt-6-sol/openai-codex, daily 09:00 Europe/Zurich.
 Never change providers/models, other profiles, or the paper SR job.

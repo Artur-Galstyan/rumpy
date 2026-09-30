@@ -1,9 +1,9 @@
 format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
-Your multiply passes its local tests and has a public copy. Connect its old runner to the public API when you graduate it.
-Read lessons/014-subtract.md, then edit exercises/04_elementwise/014_subtract.rs. Press h for hints.
-Subtract right values from left values into a new Array. Require identical shapes; no broadcasting yet.
+Your subtract passes its local tests and has a public copy. Connect its old runner to the public API when you graduate it.
+Read lessons/015-broadcast-to.md, then edit exercises/02_shape/015_broadcast_to.rs. Press h for hints.
+Copy an input into a compatible target shape. The output owns independent storage.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -397,6 +397,7 @@ The comparison answer is solutions/04_elementwise/013_multiply.rs.
 [[exercises]]
 name = "014_subtract"
 dir = "04_elementwise"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -418,4 +419,33 @@ Hint 4 - Floating point:
 Use ordinary f64 subtraction once for each pair. Signed zeros, NaNs and
 infinities make a seeded accumulator or swapped operands incorrect.
 The separate answer is solutions/04_elementwise/014_subtract.rs.
+
+Solved locally and in the public copy. The old runner still uses super::subtract.
+Connect its preserved tests to rumpy::subtract and add a historical // TODO marker.
+"""
+
+[[exercises]]
+name = "015_broadcast_to"
+dir = "02_shape"
+test = true
+strict_clippy = false
+hint = """
+Read only as far as you need.
+
+Hint 1 - Align axes:
+Read lessons/015-broadcast-to.md. Compare the input and target axes from the right.
+A missing leading input axis acts as one. Reject an input with more axes.
+
+Hint 2 - Compatible axes:
+An input length can equal its target length or equal one. Check every axis
+before an empty-target shortcut. An input length of one may expand to zero.
+
+Hint 3 - Coordinates:
+The output is row-major. For each output position, recover its coordinates
+from the target shape. An input length-one axis always reads coordinate zero.
+
+Hint 4 - Ownership:
+Copy values into a new Vec without arithmetic. Empty targets have no
+coordinates, so skip products of their dimensions. Keep input bits unchanged.
+The comparison answer is solutions/02_shape/015_broadcast_to.rs.
 """

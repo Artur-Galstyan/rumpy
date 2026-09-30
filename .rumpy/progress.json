@@ -1,8 +1,8 @@
 {
-  "current_exercise": "014_subtract",
-  "sequence": 14,
-  "last_handled_learner_commit": "82707aee85497d12cc453eb1a7e28b10263c6adb",
-  "next_candidate": "broadcast_to: shape alignment and singleton-axis expansion before broadcast arithmetic",
+  "current_exercise": "015_broadcast_to",
+  "sequence": 15,
+  "last_handled_learner_commit": "ca7fb8d4d4ad79bc357030401e81d5398c838331",
+  "next_candidate": "broadcasted add: apply trailing-axis compatibility to two inputs",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -132,6 +132,17 @@
       "library_target": "src/operations/subtract.rs",
       "extends": null,
       "source_learner_commit": "82707aee85497d12cc453eb1a7e28b10263c6adb",
+      "status": "solved_pending_regression_connection",
+      "public_api": "rumpy::subtract",
+      "public_implementation": "src/operations/subtract.rs",
+      "learner_commit": "ca7fb8d4d4ad79bc357030401e81d5398c838331"
+    },
+    "broadcast_to": {
+      "exercise": "015_broadcast_to",
+      "implementation": "exercises/02_shape/015_broadcast_to.rs",
+      "library_target": "src/operations/broadcast_to.rs",
+      "extends": null,
+      "source_learner_commit": "ca7fb8d4d4ad79bc357030401e81d5398c838331",
       "status": "unfinished"
     }
   },
@@ -175,7 +186,11 @@
     "013_multiply introduces same-shape elementwise f64 products in independent storage. NaN results compare by class, other results by bits. Broadcasting remains a later lesson.",
     "The learner Rayon add branch above one million values passed an independent 1,000,001-value ordered-output and unchanged-input-bit check.",
     "82707ae: multiply passes 11 original local tests and the same public-copy tests in a disposable module. A separate 1,000,001-element check passed the Rayon branch in both copies. The runner still imports super::multiply, so the public-API test connection and historical TODO marker remain learner-owned; the author does not edit it.",
-    "014_subtract introduces a distinct same-shape elementwise f64 difference with preserved operand order. It precedes broadcasting, which still needs a separate shape contract."
+    "014_subtract introduces a distinct same-shape elementwise f64 difference with preserved operand order. It precedes broadcasting, which still needs a separate shape contract.",
+    "ca7fb8d: subtract passes 8 original local tests and has a public copy. The old runner still imports super::subtract, so it remains active until the learner connects its preserved public-API tests. Its historical TODO marker is also missing.",
+    "An unchanged copy of the subtract contract passes against rumpy::subtract. The local and public Rayon branches each pass a 1,000,001-element ordered-output test. Saved NumPy subtraction cases pass in debug and release.",
+    "015_broadcast_to adds compatible right-aligned shape expansion into independent row-major storage. It copies input bits and checks shapes before the empty-axis shortcut.",
+    "The broadcast_to stub fails at its TODO; its 6-test reference and 130 NumPy 2.5.3 cases pass. The checker passes 5,438 saved cases in debug and release. The known historical TODO baseline remains learner-owned."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -189,7 +204,8 @@
       "010_amax",
       "011_argmax",
       "012_add",
-      "013_multiply"
+      "013_multiply",
+      "014_subtract"
     ],
     "test_failures": {}
   }
