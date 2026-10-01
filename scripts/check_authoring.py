@@ -159,6 +159,27 @@ fn million_and_one_differences_match_oracle_for_local_and_public_copies() {
 }
 ''')
             run(["cargo", "test", "--test", "author_subtract_parallel"], work)
+        if "broadcast_to" in solved_active:
+            # Record the learner's new, independent huge-empty regression without changing source.
+            (work / "tests/author_broadcast_empty_regression.rs").write_text('''
+#[path = "../exercises/02_shape/015_broadcast_to.rs"]
+mod learner;
+use rumpy::Array;
+
+#[test]
+fn local_and_public_broadcast_empty_overflow_is_known() {
+    let input = Array::from_vec(vec![1.0], vec![]).unwrap();
+    for copy in [learner::broadcast_to as fn(&Array, &[usize]) -> Array, rumpy::broadcast_to] {
+        let failure = std::panic::catch_unwind(|| copy(&input, &[usize::MAX, 2, 0]))
+            .expect_err("baseline resolved: update the review and remove this negative control");
+        let text = failure.downcast_ref::<String>().map(String::as_str)
+            .or_else(|| failure.downcast_ref::<&str>().copied());
+        assert_eq!(text, Some("broadcast_to target size exceeds usize"));
+    }
+}
+''')
+            run(["cargo", "test", "--test", "author_broadcast_empty_regression"], work)
+            print("BASELINE ERROR: broadcast_to huge empty target overflows in local and public copies")
         run(["cargo", "test", "--bin", current], work, unfinished=True)
 
         # Require the same contract tests in each independent reference file.
@@ -281,16 +302,20 @@ fn million_and_one_differences_match_oracle_for_local_and_public_copies() {
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name in {"add", "multiply", "subtract"}:
+                if name in {"add", "multiply", "subtract", "add_broadcast"}:
                     # A binary elementwise operation returns an owned Array.
                     left = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["left_bits"])
                     right = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["right_bits"])
                     expected = ", ".join("None" if bits is None else f"Some({bits}u64)" for bits in case["expected"])
+                    left_shape = case.get("left_shape", case["shape"])
+                    right_shape = case.get("right_shape", case["shape"])
                     checks.extend([
                         "    {",
                         f"    let expected_shape: &[usize] = &{json.dumps(case['shape'])};",
-                        f"    let a = rumpy::Array::from_vec(vec![{left}], expected_shape.to_vec()).unwrap();",
-                        f"    let b = rumpy::Array::from_vec(vec![{right}], expected_shape.to_vec()).unwrap();",
+                        f"    let left_shape: &[usize] = &{json.dumps(left_shape)};",
+                        f"    let right_shape: &[usize] = &{json.dumps(right_shape)};",
+                        f"    let a = rumpy::Array::from_vec(vec![{left}], left_shape.to_vec()).unwrap();",
+                        f"    let b = rumpy::Array::from_vec(vec![{right}], right_shape.to_vec()).unwrap();",
                         "    let before_a: Vec<u64> = a.as_slice().iter().map(|x| x.to_bits()).collect();",
                         "    let before_b: Vec<u64> = b.as_slice().iter().map(|x| x.to_bits()).collect();",
                         f"    let result = {callable_name}(&a, &b);",
@@ -300,8 +325,8 @@ fn million_and_one_differences_match_oracle_for_local_and_public_copies() {
                         "    for (actual, expected) in result.as_slice().iter().zip(expected) {",
                         "        match expected { Some(bits) => assert_eq!(actual.to_bits(), *bits), None => assert!(actual.is_nan()) }",
                         "    }",
-                        "    assert_eq!(a.shape(), expected_shape);",
-                        "    assert_eq!(b.shape(), expected_shape);",
+                        "    assert_eq!(a.shape(), left_shape);",
+                        "    assert_eq!(b.shape(), right_shape);",
                         "    assert_eq!(a.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(), before_a);",
                         "    assert_eq!(b.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(), before_b);",
                         "    }",

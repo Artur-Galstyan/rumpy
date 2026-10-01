@@ -1,0 +1,9 @@
+# 016 author review
+
+- Handled learner commits: `43342dea009552b9feaa513ff34bb6186aacd64a`, `47b21815f1d45452219492e95b7c710989a92a61`.
+- The six preserved `015_broadcast_to` tests pass locally, in release, and against its public copy through an unchanged test module. Its old runner still imports the local function, so it remains active, not graduated.
+- Independent negative control: `cargo test --test author_broadcast_empty_regression` passed. Both the local and public copies panic with `broadcast_to target size exceeds usize` for scalar input and compatible empty target `[usize::MAX, 2, 0]`. The product reaches its overflow before it reaches zero. The learner owns this fix.
+- The new `016_add_broadcast` uses a separate function and does not edit `src/` or earlier runners. Its unfinished stub fails at `not yet implemented: add_broadcast`. Its reference passes six identical contract tests.
+- `validation/generate_add_broadcast_numpy.py` saved 96 independent NumPy 2.5.3 cases, including scalar, unequal compatible, equal, and empty shapes. The author checker passed 5,534 saved cases in debug and release, including the new 96.
+- `cargo fmt --check`, `cargo check --all-targets`, `cargo clippy --all-targets -- -D warnings`, scaffold and prior runner tests passed in the checker. The whole-repository Rustlings check remains blocked by learner-owned missing historical `// TODO` markers, now including 015. The unchanged files passed Rustlings checks in an isolated copy that excluded those known runners. The negative control ran separately after the full author checker and is part of the updated checker for the next run.
+- Independent read-only code review agreed that the old runner has not graduated and that the huge-empty regression is real. A suggestion to test nonempty overflow with scalar inputs was rejected because this two-input API cannot request an arbitrary target shape.

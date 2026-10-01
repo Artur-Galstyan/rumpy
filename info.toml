@@ -2,8 +2,8 @@ format_version = 1
 welcome_message = """
 Welcome to rumpy: build a NumPy/SciPy-style library in Rust.
 Your subtract passes its local tests and has a public copy. Connect its old runner to the public API when you graduate it.
-Read lessons/015-broadcast-to.md, then edit exercises/02_shape/015_broadcast_to.rs. Press h for hints.
-Copy an input into a compatible target shape. The output owns independent storage.
+Read lessons/016-add-broadcast.md, then edit exercises/04_elementwise/016_add_broadcast.rs. Press h for hints.
+Add two compatible arrays into independent owned storage.
 """
 final_message = """
 You reached the end of the currently published exercises.
@@ -427,6 +427,7 @@ Connect its preserved tests to rumpy::subtract and add a historical // TODO mark
 [[exercises]]
 name = "015_broadcast_to"
 dir = "02_shape"
+skip_check_unsolved = true
 test = true
 strict_clippy = false
 hint = """
@@ -448,4 +449,21 @@ Hint 4 - Ownership:
 Copy values into a new Vec without arithmetic. Empty targets have no
 coordinates, so skip products of their dimensions. Keep input bits unchanged.
 The comparison answer is solutions/02_shape/015_broadcast_to.rs.
+Your six local tests and an unchanged public-copy test pass. The old runner still imports
+super::broadcast_to; connect it to rumpy::broadcast_to for graduation. A compatible
+huge empty target [usize::MAX, 2, 0] currently overflows in both learner copies.
+Fix this in your own code and add the historical // TODO marker to the old runner.
+"""
+
+[[exercises]]
+name = "016_add_broadcast"
+dir = "04_elementwise"
+test = true
+strict_clippy = false
+hint = """
+Hint 1 - Align: Read lessons/016-add-broadcast.md. Compare axes from the right. Missing leading axes act like one.
+Hint 2 - Validate: Determine every output axis before the empty shortcut. Equal axes or length-one axes are compatible.
+Hint 3 - Values: Select each input value with its broadcast coordinate. Your public broadcast_to needs a huge-empty fix before reuse.
+Hint 4 - Storage: Keep equal-shape behavior, and return independent row-major output storage.
+The separate answer is solutions/04_elementwise/016_add_broadcast.rs.
 """

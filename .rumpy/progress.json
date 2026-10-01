@@ -1,8 +1,8 @@
 {
-  "current_exercise": "015_broadcast_to",
-  "sequence": 15,
-  "last_handled_learner_commit": "ca7fb8d4d4ad79bc357030401e81d5398c838331",
-  "next_candidate": "broadcasted add: apply trailing-axis compatibility to two inputs",
+  "current_exercise": "016_add_broadcast",
+  "sequence": 16,
+  "last_handled_learner_commit": "47b21815f1d45452219492e95b7c710989a92a61",
+  "next_candidate": "broadcasted multiply or one-dimensional dot",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -143,6 +143,17 @@
       "library_target": "src/operations/broadcast_to.rs",
       "extends": null,
       "source_learner_commit": "ca7fb8d4d4ad79bc357030401e81d5398c838331",
+      "status": "solved_pending_regression_connection",
+      "public_api": "rumpy::broadcast_to",
+      "public_implementation": "src/operations/broadcast_to.rs",
+      "learner_commit": "47b21815f1d45452219492e95b7c710989a92a61"
+    },
+    "add_broadcast": {
+      "exercise": "016_add_broadcast",
+      "implementation": "exercises/04_elementwise/016_add_broadcast.rs",
+      "library_target": "src/operations/add.rs",
+      "extends": "add",
+      "source_learner_commit": "47b21815f1d45452219492e95b7c710989a92a61",
       "status": "unfinished"
     }
   },
@@ -190,7 +201,10 @@
     "ca7fb8d: subtract passes 8 original local tests and has a public copy. The old runner still imports super::subtract, so it remains active until the learner connects its preserved public-API tests. Its historical TODO marker is also missing.",
     "An unchanged copy of the subtract contract passes against rumpy::subtract. The local and public Rayon branches each pass a 1,000,001-element ordered-output test. Saved NumPy subtraction cases pass in debug and release.",
     "015_broadcast_to adds compatible right-aligned shape expansion into independent row-major storage. It copies input bits and checks shapes before the empty-axis shortcut.",
-    "The broadcast_to stub fails at its TODO; its 6-test reference and 130 NumPy 2.5.3 cases pass. The checker passes 5,438 saved cases in debug and release. The known historical TODO baseline remains learner-owned."
+    "The broadcast_to stub fails at its TODO; its 6-test reference and 130 NumPy 2.5.3 cases pass. The checker passes 5,438 saved cases in debug and release. The known historical TODO baseline remains learner-owned.",
+    "47b2181: broadcast_to passes six local tests and has an exported public copy. Its old runner still imports super::broadcast_to, so the learner owns the public-API test connection.",
+    "A compatible huge empty target [usize::MAX, 2, 0] panics in both broadcast_to copies: checked multiplication overflows before reaching zero. The learner owns this fix.",
+    "016_add_broadcast extends equal-shape addition in a new exercise, leaving the graduated add and earlier runners unchanged."
   ],
   "author_check_baseline": {
     "missing_todo": [
@@ -205,7 +219,8 @@
       "011_argmax",
       "012_add",
       "013_multiply",
-      "014_subtract"
+      "014_subtract",
+      "015_broadcast_to"
     ],
     "test_failures": {}
   }

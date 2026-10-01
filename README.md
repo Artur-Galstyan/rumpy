@@ -16,9 +16,12 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [015 — broadcast_to](lessons/015-broadcast-to.md) and edit
-`exercises/02_shape/015_broadcast_to.rs`. Copy one input into a compatible target shape.
-Align trailing axes, expand singleton axes, and return independent owned storage.
+**Current task:** read [016 — add_broadcast](lessons/016-add-broadcast.md) and edit
+`exercises/04_elementwise/016_add_broadcast.rs`. Add two compatible input shapes
+into independent owned storage. This extension leaves your old `add` unchanged.
+Your `broadcast_to` passes six local tests and has a public copy. Its old runner still
+uses local code. A huge empty target `[usize::MAX, 2, 0]` panics in both copies because
+the product overflows before the zero axis. Fix that in your code before reuse.
 Your subtract passes all 8 original local tests and has a public `rumpy::subtract` copy.
 Its runner still imports the local function. Connect its preserved tests to the public API
 when you graduate it; the author does not change that runner or your code.
@@ -35,7 +38,7 @@ The filename prefix is the global exercise order. Matching solutions use the sam
 Public function names stay unnumbered.
 Press `h` for hints. Save the current exercise to rerun its tests.
 
-The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, `013_multiply`, and `014_subtract` lack Rustlings' required historical markers.
+The runners `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, `013_multiply`, `014_subtract`, and `015_broadcast_to` lack Rustlings' required historical markers.
 Add the corresponding comment to each file without a test change:
 
 ```rust
@@ -71,13 +74,15 @@ Add the corresponding comment to each file without a test change:
 // TODO (historical, completed): implementation moved to rumpy::multiply.
 // In exercises/04_elementwise/014_subtract.rs, after you connect its public tests:
 // TODO (historical, completed): implementation moved to rumpy::subtract.
+// In exercises/02_shape/015_broadcast_to.rs, after you connect its public tests:
+// TODO (historical, completed): implementation moved to rumpy::broadcast_to.
 ```
 
 ```sh
-rustlings hint 015_broadcast_to
-rustlings run 015_broadcast_to
+rustlings hint 016_add_broadcast
+rustlings run 016_add_broadcast
 # Headless checks:
-cargo test --bin 015_broadcast_to
+cargo test --bin 016_add_broadcast
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -88,7 +93,10 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/02_shape/015_broadcast_to.rs active task: edit this
+exercises/04_elementwise/016_add_broadcast.rs active task: edit this
+solutions/04_elementwise/016_add_broadcast.rs separate reference
+exercises/02_shape/015_broadcast_to.rs passing local tests; public connection pending
+src/operations/broadcast_to.rs      your public copy
 solutions/02_shape/015_broadcast_to.rs reference: compare after your attempt
 src/operations/subtract.rs         your passing public copy
 exercises/04_elementwise/014_subtract.rs passing local tests; public connection pending
@@ -194,20 +202,23 @@ Do not remove their regression tests. The author checks are not a learner comple
 the passing reference solutions, and recorded NumPy fixtures. The script does not alter your
 exercise files. After you solve the current task, its expected-red check will fail by design.
 
-The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, `013_multiply`, and `014_subtract` lack historical markers.
+The full-repository Rustlings author check fails because `003_full`, `004_arange`, `005_eye`, `006_reshape`, `007_transpose`, `008_sum`, `009_mean`, `010_amax`, `011_argmax`, `012_add`, `013_multiply`, `014_subtract`, and `015_broadcast_to` lack historical markers.
 The checker reports this baseline error. A second disposable project excludes those runners and their references from the Rustlings check.
 It still runs their full tests, their reference tests, and the public-API oracle checks separately.
 It does not add markers to your source. The normal Rustlings check resumes after you add the comments.
 
 The checker runs all original assertions against the graduated public APIs and the references.
 The previous reshape stride regression is resolved. No temporary library substitute is necessary.
-The current broadcast_to stub deliberately fails at `todo!("broadcast_to")`. Its reference has 6 identical contract tests.
-The subtract fixture contains 152 real NumPy 2.5.3 cases; its learner local and public copies pass the original tests.
-The broadcast_to fixture contains 130 NumPy 2.5.3 cases with 670 copied values.
+The current add_broadcast stub deliberately fails at `todo!("add_broadcast")`.
+Its separate reference has six identical contract tests and a saved NumPy 2.5.3 fixture.
+The prior broadcast_to passes locally and in an unchanged public-copy test. A huge
+empty target can still overflow in the learner's code before the zero axis.
+The known historical TODO baseline remains learner-owned.
 Regenerate the broadcast_to fixture with `validation/generate_broadcast_to_numpy.py` in the NumPy environment.
 The checker requires a nonempty fixture for every recorded operation.
 The multiply and subtract references pass in debug and optimized builds, including huge empty shapes.
-The public argmax, multiply, and subtract functions are tested separately from their still-local runners. None is graduated.
+The public argmax, multiply, subtract, and broadcast_to functions have separate public-copy checks; their runners remain local.
+The checker passed 5,534 saved NumPy cases in debug and release, including 96 broadcast-add cases.
 The public mean and sum each match 100 saved NumPy cases where the explicit sequential order agrees.
 Order-sensitive inputs have separate Rust tests. The checker normalizes only documented public-API imports.
-All original assertions remain unchanged. See [the publication review](validation/015-authoring.md) for the checks and baseline errors.
+All original assertions remain unchanged. See [the 016 review](validation/016-authoring.md) for the checks and baseline errors.
