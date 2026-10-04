@@ -1,5 +1,5 @@
 // Read lessons/016-add-broadcast.md. Extend your equal-shape addition to compatible shapes.
-use rumpy::{Array, add};
+use rumpy::{Array, add, broadcast_to};
 
 /// Add two owned row-major f64 arrays with right-aligned broadcast shapes.
 /// This separate extension does not change the existing rumpy::add API.
@@ -7,9 +7,49 @@ pub fn add_broadcast(a: &Array, b: &Array) -> Array {
     if a.shape() == b.shape() {
         return add(a, b);
     }
-    // TODO: Find the common shape, copy both inputs into it, then add in row-major order.
-    let _ = (a, b);
-    todo!("add_broadcast")
+    
+    let mut a_shape = a.shape().to_vec();
+    let mut b_shape = b.shape().to_vec();
+
+    if a.shape().len() > b.shape().len() {
+        while b_shape.len() < a_shape.len() {
+            b_shape.insert(0, 1);
+        }
+    } else {
+        while a_shape.len() < b_shape.len() {
+            a_shape.insert(0, 1);
+        }
+    } 
+
+    let target_shape: Vec<usize> = a_shape.iter().zip(b_shape).map(|p| {
+        let (dim_a, dim_b) = p;
+        
+        if *dim_a != dim_b && (*dim_a != 1 && dim_b != 1) {
+            panic!("add_broadcast requires compatible shapes")
+        }
+
+        if *dim_a == dim_b {
+            *dim_a
+        } else {
+            if *dim_a == 1 {
+                dim_b
+            } else {
+                *dim_a
+            }
+        }
+    }).collect();
+
+    let target_shape = target_shape.as_slice();
+    if target_shape.contains(&0) {
+        return Array::from_vec(Vec::new(), target_shape.to_vec())
+            .expect("empty target shape must have zero elements");
+    }
+
+    let broadcasted_a = broadcast_to(a, target_shape);
+    let broadcasted_b = broadcast_to(b, target_shape);
+
+    add(&broadcasted_a, &broadcasted_b)
+    
 }
 
 fn main() {}
