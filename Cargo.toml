@@ -32,6 +32,8 @@ bin = [
   { name = "015_broadcast_to_sol", path = "solutions/02_shape/015_broadcast_to.rs" },
   { name = "016_add_broadcast", path = "exercises/04_elementwise/016_add_broadcast.rs" },
   { name = "016_add_broadcast_sol", path = "solutions/04_elementwise/016_add_broadcast.rs" },
+  { name = "017_multiply_broadcast", path = "exercises/04_elementwise/017_multiply_broadcast.rs" },
+  { name = "017_multiply_broadcast_sol", path = "solutions/04_elementwise/017_multiply_broadcast.rs" },
 ]
 
 [package]

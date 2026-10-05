@@ -1,8 +1,8 @@
 {
-  "current_exercise": "016_add_broadcast",
-  "sequence": 16,
-  "last_handled_learner_commit": "47b21815f1d45452219492e95b7c710989a92a61",
-  "next_candidate": "broadcasted multiply or one-dimensional dot",
+  "current_exercise": "017_multiply_broadcast",
+  "sequence": 17,
+  "last_handled_learner_commit": "e001d8e33bc51253123004baf6a0ac0bc80c82d4",
+  "next_candidate": "one-dimensional dot",
   "trigger": "new learner commits on origin/main, not passing tests",
   "agent_name": "Rumpy Exercise Bot",
   "agent_email": "rumpy-exercises@users.noreply.github.com",
@@ -154,6 +154,14 @@
       "library_target": "src/operations/add.rs",
       "extends": "add",
       "source_learner_commit": "47b21815f1d45452219492e95b7c710989a92a61",
+      "status": "solved_pending_regression_connection"
+    },
+    "multiply_broadcast": {
+      "exercise": "017_multiply_broadcast",
+      "implementation": "exercises/04_elementwise/017_multiply_broadcast.rs",
+      "library_target": "src/operations/multiply.rs",
+      "extends": "multiply",
+      "source_learner_commit": "e001d8e33bc51253123004baf6a0ac0bc80c82d4",
       "status": "unfinished"
     }
   },
@@ -204,10 +212,12 @@
     "The broadcast_to stub fails at its TODO; its 6-test reference and 130 NumPy 2.5.3 cases pass. The checker passes 5,438 saved cases in debug and release. The known historical TODO baseline remains learner-owned.",
     "47b2181: broadcast_to passes six local tests and has an exported public copy. Its old runner still imports super::broadcast_to, so the learner owns the public-API test connection.",
     "A compatible huge empty target [usize::MAX, 2, 0] panics in both broadcast_to copies: checked multiplication overflows before reaching zero. The learner owns this fix.",
-    "016_add_broadcast extends equal-shape addition in a new exercise, leaving the graduated add and earlier runners unchanged."
+    "016_add_broadcast extends equal-shape addition in a new exercise, leaving the graduated add and earlier runners unchanged.",
+    "e001d8e: add_broadcast passes all six original local tests and its 96 saved NumPy broadcast cases; it remains local and is not graduated. The learner must connect preserved regression tests to a public API."
   ],
   "author_check_baseline": {
     "missing_todo": [
+      "016_add_broadcast",
       "003_full",
       "004_arange",
       "005_eye",

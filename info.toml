@@ -467,3 +467,16 @@ Hint 3 - Values: Select each input value with its broadcast coordinate. Your pub
 Hint 4 - Storage: Keep equal-shape behavior, and return independent row-major output storage.
 The separate answer is solutions/04_elementwise/016_add_broadcast.rs.
 """
+
+[[exercises]]
+name = "017_multiply_broadcast"
+dir = "04_elementwise"
+test = true
+strict_clippy = false
+hint = """
+Hint 1 - Align axes from the right; missing leading axes act like one.
+Hint 2 - Validate all axes before checking for zero, and avoid any dimension products for empty outputs.
+Hint 3 - Map row-major output coordinates to each operand, selecting coordinate zero on expanded singleton axes.
+Hint 4 - Return fresh owned storage; preserve input shapes and bits. See lessons/017-multiply-broadcast.md.
+The separate answer is solutions/04_elementwise/017_multiply_broadcast.rs.
+"""

@@ -84,6 +84,13 @@ def main():
             ROOT, work,
             ignore=shutil.ignore_patterns(".git", "target", ".rustlings-state.txt", "__pycache__"),
         )
+        # The pushed learner's 016 runner is unformatted. Format only this
+        # disposable copy so the author files still receive a strict check.
+        learner_016 = work / "exercises/04_elementwise/016_add_broadcast.rs"
+        before_016 = learner_016.read_bytes()
+        subprocess.run(["rustfmt", "--edition", "2024", str(learner_016)], check=True)
+        if learner_016.read_bytes() != before_016:
+            print("BASELINE ERROR: learner-owned 016_add_broadcast needs rustfmt; original untouched")
         run(["cargo", "fmt", "--check"], work)
         run(["cargo", "check", "--all-targets"], work)
         run(["cargo", "clippy", "--all-targets", "--", "-D", "warnings"], work)
@@ -103,11 +110,12 @@ def main():
             original_import = f"use super::{operation};"
             if tests.count(original_import) != 1:
                 raise ValueError(f"Unexpected active test import for {name}")
-            # Test the public copy without changing the learner's actual runner.
-            public_tests = tests.replace(original_import, f"use {record['public_api']};", 1)
-            test_name = f"author_{name}_public"
-            (work / "tests" / f"{test_name}.rs").write_text("#[cfg(test)]" + public_tests)
-            run(["cargo", "test", "--test", test_name], work)
+            if "public_api" in record:
+                # Test a public copy only when the learner actually created one.
+                public_tests = tests.replace(original_import, f"use {record['public_api']};", 1)
+                test_name = f"author_{name}_public"
+                (work / "tests" / f"{test_name}.rs").write_text("#[cfg(test)]" + public_tests)
+                run(["cargo", "test", "--test", test_name], work)
         if "multiply" in solved_active:
             # Exercise both learner-owned Rayon branches without editing their source.
             (work / "tests/author_multiply_parallel.rs").write_text('''
@@ -284,7 +292,7 @@ fn local_and_public_broadcast_empty_overflow_is_known() {
             fixture = json.loads(fixture_path.read_text())
             if name in public_records:
                 callable_name = public_records[name]["public_api"]
-            elif name in solved_active:
+            elif name in solved_active and "public_api" in solved_active[name]:
                 callable_name = solved_active[name]["public_api"]
             else:
                 exercise_id = progress["active"][name]["exercise"]
@@ -302,7 +310,7 @@ fn local_and_public_broadcast_empty_overflow_is_known() {
                 # Keep all cases, but avoid one enormous Rust test function.
                 if case_count and case_count % 64 == 0:
                     checks.extend(["}", "#[test]", f"fn numpy_batch_{case_count // 64}() {{"])
-                if name in {"add", "multiply", "subtract", "add_broadcast"}:
+                if name in {"add", "multiply", "subtract", "add_broadcast", "multiply_broadcast"}:
                     # A binary elementwise operation returns an owned Array.
                     left = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["left_bits"])
                     right = ", ".join(f"f64::from_bits({bits}u64)" for bits in case["right_bits"])

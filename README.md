@@ -16,9 +16,11 @@ rustlings
 
 Do **not** run `rustlings init` here. That creates the official Rust course.
 
-**Current task:** read [016 — add_broadcast](lessons/016-add-broadcast.md) and edit
-`exercises/04_elementwise/016_add_broadcast.rs`. Add two compatible input shapes
-into independent owned storage. This extension leaves your old `add` unchanged.
+**Current task:** read [017 — multiply_broadcast](lessons/017-multiply-broadcast.md) and edit
+`exercises/04_elementwise/017_multiply_broadcast.rs`. Multiply two compatible input shapes
+into independent owned storage. This extension leaves your old `multiply` unchanged.
+Your `016_add_broadcast` passes six local tests and 96 NumPy oracle cases. Its old runner still
+uses its local implementation; connect preserved tests to a public API for graduation.
 Your `broadcast_to` passes six local tests and has a public copy. Its old runner still
 uses local code. A huge empty target `[usize::MAX, 2, 0]` panics in both copies because
 the product overflows before the zero axis. Fix that in your code before reuse.
@@ -79,10 +81,10 @@ Add the corresponding comment to each file without a test change:
 ```
 
 ```sh
-rustlings hint 016_add_broadcast
-rustlings run 016_add_broadcast
+rustlings hint 017_multiply_broadcast
+rustlings run 017_multiply_broadcast
 # Headless checks:
-cargo test --bin 016_add_broadcast
+cargo test --bin 017_multiply_broadcast
 cargo test --bin 001_zeros --bin 002_ones --bin 003_full --bin 004_arange --bin 005_eye --bin 006_reshape --bin 007_transpose
 ```
 
@@ -93,8 +95,9 @@ After dependency changes, press `c` for a full check, or use `--manual-run` with
 ## Exercise to library
 
 ```text
-exercises/04_elementwise/016_add_broadcast.rs active task: edit this
-solutions/04_elementwise/016_add_broadcast.rs separate reference
+exercises/04_elementwise/017_multiply_broadcast.rs active task: edit this
+solutions/04_elementwise/017_multiply_broadcast.rs separate reference
+exercises/04_elementwise/016_add_broadcast.rs passing local tests; public connection pending
 exercises/02_shape/015_broadcast_to.rs passing local tests; public connection pending
 src/operations/broadcast_to.rs      your public copy
 solutions/02_shape/015_broadcast_to.rs reference: compare after your attempt
